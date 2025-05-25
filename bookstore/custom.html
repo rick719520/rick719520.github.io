@@ -255,17 +255,6 @@
             <img src="img/banner_5.png" alt="文旅周刊" class="banner-img">
         </header>
 
-        <!-- 导航栏 -->
-        <nav class="main-nav">
-            <ul>
-                <li><a href="custom.html">书店主页</a></li>
-                <li><a href="qiye.html">企业采购</a></li>
-                <li><a href="tougao.html">小说投稿</a></li>
-                <li><a href="service.html">客户服务</a></li>
-                <li><a href="personal.html">个人中心</a></li>
-            </ul>
-        </nav>
-
         <!-- 内容区域 -->
         <div class="content">
             <!-- 左侧分类导航 -->
@@ -374,20 +363,48 @@
         </footer>
     </div>
 
-    <!-- 底部悬浮导航栏 -->
-    <div class="float-nav">
-        <div class="float-nav-container">
-            <a href="/" class="float-nav-button">
-                <i class="fas fa-home"></i>
-            </a>
-            <a href="#" class="float-nav-button">
-                <i class="fas fa-globe"></i>
-            </a>
-            <div class="float-nav-wechat">
-                <i class="fab fa-weixin"></i>
-                <span>378778778</span>
+    <!-- 微信联系弹窗 -->
+    <div id="wechatModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">×</span>
+            <h3 class="modal-title">获取源码</h3>
+            <div class="wechat-info">
+                <i class="fab fa-weixin wechat-icon"></i>
+                <div class="wechat-id">378778778</div>
             </div>
+            <p class="wechat-note">添加微信获取完整源码</p>
         </div>
     </div>
+
+    <!-- 获取源码按钮 -->
+    <button id="sourceCodeBtn" class="source-code-btn">
+        <i class="fas fa-code"></i>
+    </button>
+
+    <script>
+    // 获取弹窗元素
+    var modal = document.getElementById("wechatModal");
+    // 获取按钮元素
+    var btn = document.getElementById("sourceCodeBtn");
+    // 获取关闭按钮元素
+    var closeBtn = document.getElementsByClassName("close-btn")[0];
+
+    // 点击按钮打开弹窗
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // 点击关闭按钮关闭弹窗
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // 点击弹窗外部关闭弹窗
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    </script>
 
  <script src="/bundle.js"></script></body></html>
