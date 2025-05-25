@@ -1,0 +1,393 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文旅周刊</title>
+    
+    
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "微软雅黑", "宋体", Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            color: #0055aa;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* 顶部横幅 */
+        .banner {
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+        }
+
+        .banner-img {
+            width: 100%;
+            display: block;
+        }
+
+        /* 主导航栏 */
+        .main-nav {
+            background-color: #666;
+            color: #fff;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .main-nav ul {
+            display: flex;
+        }
+
+        .main-nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .main-nav a {
+            color: #fff;
+            display: block;
+            padding: 0 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .main-nav a:hover {
+            background-color: #444;
+        }
+
+        /* 内容区域布局 */
+        .content {
+            display: flex;
+            padding: 10px 0;
+        }
+
+        /* 左侧分类导航 */
+        .sidebar {
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        .sidebar-title {
+            background-color: #348369;
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-weight: bold;
+        }
+
+        .category-list li {
+            border-bottom: 1px solid #ddd;
+            padding: 8px 5px;
+            background-color: #f9f9f9;
+        }
+
+        .category-list li:hover {
+            background-color: #e9e9e9;
+        }
+
+        /* 中间内容区 */
+        .main-content {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .section {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+
+        .section-header {
+            border-bottom: 1px solid #ddd;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+        }
+
+        .section-icon {
+            height: 20px;
+        }
+
+        .section-content {
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .intro-text h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .intro-text p {
+            font-size: 12px;
+            text-indent: 2em;
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+        .read-more {
+            text-align: right;
+        }
+
+        .more-link {
+            display: inline-block;
+            padding: 2px 8px;
+            background-color: #348369;
+            color: white;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        /* 图书列表 */
+        .book-list {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .book-item {
+            width: 30%;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+
+        .book-info h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .book-author {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .book-price {
+            color: #d00;
+            font-weight: bold;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-weight: normal;
+            font-size: 12px;
+        }
+
+        /* 右侧服务区域 */
+        .service-sidebar {
+            width: 220px;
+        }
+
+        .service-title {
+            background-color: #348369;
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-weight: bold;
+        }
+
+        .service-content {
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .service-list li {
+            padding: 8px;
+            border-bottom: 1px dotted #ddd;
+        }
+
+        .service-list li a {
+            font-size: 12px;
+            display: block;
+            line-height: 1.5;
+        }
+
+        .service-list li:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 页脚 */
+        .footer {
+            background-color: #555;
+            color: #ccc;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+    </style>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');loadCss('float-nav.css');loadCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');</script><noscript><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="float-nav.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript></head>
+<body>
+    <div class="container">
+        <!-- 顶部横幅 -->
+        <header class="banner">
+            <img src="img/banner_5.png" alt="文旅周刊" class="banner-img">
+        </header>
+
+        <!-- 导航栏 -->
+        <nav class="main-nav">
+            <ul>
+                <li><a href="custom.html">书店主页</a></li>
+                <li><a href="qiye.html">企业采购</a></li>
+                <li><a href="tougao.html">小说投稿</a></li>
+                <li><a href="service.html">客户服务</a></li>
+                <li><a href="personal.html">个人中心</a></li>
+            </ul>
+        </nav>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 左侧分类导航 -->
+            <div class="sidebar">
+                <div class="sidebar-title">搜索图书</div>
+                <ul class="category-list">
+                    <li><a href="#">文学</a></li>
+                    <li><a href="#">哲学</a></li>
+                    <li><a href="#">历史</a></li>
+                    <li><a href="#">小说</a></li>
+                    <li><a href="#">少儿</a></li>
+                    <li><a href="#">科普</a></li>
+                    <li><a href="#">网络</a></li>
+                    <li><a href="#">育儿</a></li>
+                    <li><a href="#">科技</a></li>
+                    <li><a href="#">艺术</a></li>
+                    <li><a href="#">管理</a></li>
+                </ul>
+            </div>
+
+            <!-- 中间内容区 -->
+            <div class="main-content">
+                <!-- 网站简介 -->
+                <section class="section">
+                    <div class="section-header">
+                        <img src="img/t_wzjj.png" alt="网站简介" class="section-icon">
+                    </div>
+                    <div class="section-content">
+                        <div class="intro-text">
+                            <h3>一、资质团队</h3>
+                            <p>本站由中国文学研究工作委员会以创新与文化为主旨，并设立资讯平台的团队共同努力创建。不仅要知识丰富化，不断地为读者带来信息，还希望读者能够增进生活，丰富知识。</p>
+                            
+                            <h3>二、网站使命</h3>
+                            <p>创意型、特色化、本网站整体成熟度已至极尽之态，能全全然知识渊博讯通问题，从而，解了在现新形势，让所有新出版的图书及图书馆等。</p>
+                        </div>
+                        <div class="read-more">
+                            <a href="#" class="more-link">查看更多</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 图书推荐 -->
+                <section class="section">
+                    <div class="section-header">
+                        <img src="img/t_tstj.png" alt="图书推荐" class="section-icon">
+                    </div>
+                    <div class="section-content">
+                        <div class="book-list">
+                            <div class="book-item">
+                                <div class="book-cover">
+                                    <img src="img/b_huozhe.jpg" alt="活着">
+                                </div>
+                                <div class="book-info">
+                                    <h4>《活着》</h4>
+                                    <p class="book-author">余华 著</p>
+                                    <p class="book-price">¥14.00 <span class="original-price">¥28.00</span></p>
+                                </div>
+                            </div>
+                            <div class="book-item">
+                                <div class="book-cover">
+                                    <img src="img/b_byx.jpg" alt="白银谷">
+                                </div>
+                                <div class="book-info">
+                                    <h4>《白银谷》</h4>
+                                    <p class="book-author">余秋雨 著</p>
+                                    <p class="book-price">¥29.00 <span class="original-price">¥58.00</span></p>
+                                </div>
+                            </div>
+                            <div class="book-item">
+                                <div class="book-cover">
+                                    <img src="img/b_bngd.jpg" alt="百年孤独">
+                                </div>
+                                <div class="book-info">
+                                    <h4>《百年孤独》</h4>
+                                    <p class="book-author">加西亚·马尔克斯</p>
+                                    <p class="book-price">¥35.00 <span class="original-price">¥65.00</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 右侧服务区 -->
+            <div class="service-sidebar">
+                <div class="service-title">读书相关推荐</div>
+                <div class="service-content">
+                    <ul class="service-list">
+                        <li><a href="#">借阅说明：您为了让图书请假归还请"合理借阅"，否请于平台上做交流读书理解，我们将权利收回。</a></li>
+                        <li><a href="#">最值得阅读的时间推荐法</a></li>
+                        <li><a href="#">你的剧作，戏剧与小说</a></li>
+                        <li><a href="#">真正的自我，不要命于虚的魂魄</a></li>
+                        <li><a href="#">您读知道书了？</a></li>
+                        <li><a href="#">不可忽视自己智慧力</a></li>
+                        <li><a href="#">真正的知导真理行动</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚信息 -->
+        <footer class="footer">
+            <p>主办：万事通图书交易云线工作室</p>
+            <p>地址：北京海淀区大钟寺华大厦6层 接待时间：周一至周五10:00~17:00</p>
+            <p>© 2025 719520.xyz 版权所有</p>
+        </footer>
+    </div>
+
+    <!-- 底部悬浮导航栏 -->
+    <div class="float-nav">
+        <div class="float-nav-container">
+            <a href="/" class="float-nav-button">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="#" class="float-nav-button">
+                <i class="fas fa-globe"></i>
+            </a>
+            <div class="float-nav-wechat">
+                <i class="fab fa-weixin"></i>
+                <span>378778778</span>
+            </div>
+        </div>
+    </div>
+
+ <script src="/bundle.js"></script></body></html>

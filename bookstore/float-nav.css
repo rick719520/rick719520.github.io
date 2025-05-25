@@ -1,0 +1,98 @@
+/* 底部悬浮导航栏样式 */
+.float-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+}
+
+.float-nav-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+}
+
+.float-nav-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.float-nav-button:hover {
+    transform: translateY(-2px);
+    color: #64748B;
+}
+
+.float-nav-divider {
+    width: 1px;
+    height: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.float-nav-wechat {
+    font-size: 14px;
+    color: #333;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.float-nav-wechat i {
+    margin-right: 5px;
+}
+
+/* 深色模式样式 */
+@media (prefers-color-scheme: dark) {
+    .float-nav-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .float-nav-button {
+        color: #fff;
+    }
+    
+    .float-nav-divider {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .float-nav-wechat {
+        color: #fff;
+    }
+}
+
+/* 移动端样式 */
+@media (max-width: 768px) {
+    .float-nav-container {
+        padding: 6px 16px;
+    }
+    
+    .float-nav-button {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .float-nav-wechat {
+        font-size: 12px;
+    }
+} 
