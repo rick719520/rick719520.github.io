@@ -1,0 +1,85 @@
+/* 移除所有卡片的hover效果 */
+
+/* 基本卡片hover效果移除 */
+.card:hover {
+  transform: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  transition: none !important;
+}
+
+[data-theme="dark"] .card:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 移除卡片边框hover效果 */
+.card-border,
+.card:hover .card-border {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* 移除图标hover效果 */
+.card:hover .icon-wrapper,
+.post-card:hover .icon-wrapper {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.card:hover .icon-wrapper i,
+.post-card:hover .icon-wrapper i {
+  animation: none !important;
+}
+
+/* 移除内容hover效果 */
+.card:hover .card-content,
+.post-card:hover .card-content {
+  transform: none !important;
+}
+
+.card:hover .post-title,
+.post-card:hover .post-title {
+  letter-spacing: normal !important;
+}
+
+/* 移除页脚hover效果 */
+.card:hover .card-footer,
+.post-card:hover .card-footer {
+  transform: none !important;
+}
+
+/* 移除标签hover效果 */
+.card:hover .card-tag,
+.post-card:hover .card-tag {
+  color: var(--text-muted) !important;
+  transform: none !important;
+}
+
+/* 移除网格背景hover效果 */
+.card-pattern,
+.card:hover .card-pattern {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* 移除卡片发光效果 */
+.card::after,
+.card:hover::after {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* 移除翻页按钮hover效果 */
+.pagination-icon:hover {
+  background-color: inherit !important;
+  color: inherit !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* 移除banner箭头hover效果 */
+.banner-arrow:hover {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  transform: none !important;
+} 

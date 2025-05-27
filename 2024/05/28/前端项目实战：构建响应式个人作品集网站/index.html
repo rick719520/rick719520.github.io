@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="box-sizing: border-box; overflow-x: hidden;">
+<head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="这是一个使用Hexo搭建的个人博客，主要分享技术文章和生活感悟">
+<meta name="keywords" content="博客,技术,编程,生活">
+<meta name="author" content="博主名字">
+<meta name="generator" content="Hexo">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico"> 
+<!-- Theme meta tag -->
+<meta name="color-scheme" content="light dark">
+<title> - 前端项目实战：构建响应式个人作品集网站</title>
+<!-- Theme Style -->
+
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Logo CSS removed as we're now using text instead of images -->
+
+<!-- Open Graph 协议 -->
+<meta property="og:title" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://example.com">
+<meta property="og:description" content="这是一个使用Hexo搭建的个人博客，主要分享技术文章和生活感悟"> 
+    <!-- Theme detection script - must be first -->
+    <script>
+        (function() {
+            // Function to check if current time is between 7am and 8pm
+            function isDayTime() {
+                const hour = new Date().getHours();
+                return hour >= 7 && hour < 20; // 7am to 8pm
+            }
+            
+            // Get theme from localStorage or use auto based on time
+            const savedThemePreference = localStorage.getItem('themePreference') || 'auto';
+            
+            // If auto preference or no preference saved, set theme based on time
+            if (savedThemePreference === 'auto') {
+                const autoTheme = isDayTime() ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', autoTheme);
+                localStorage.setItem('theme', autoTheme);
+            } else {
+                // Use the saved theme if user has manually set a preference
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        })();
+    </script>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <!-- Font Awesome via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Boxicons via CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 禁用hover效果 -->
+    <link rel="stylesheet" href="/css/no-hover.css">
+    <style>
+        /* 全局盒模型规则 */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 基础颜色变量 */
+            --bg-color: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --highlight-color: var(--custom-blue);
+            --highlight-color-rgb: 0, 102, 204; /* Deep Blue */
+            --accent-color: var(--custom-red);
+            --accent-color-rgb: 220, 38, 38; /* Rose Red */
+            --custom-blue: #0066cc; /* Deep Blue */
+            --custom-red: #dc2626; /* Rose Red */
+            --icon-color: var(--highlight-color);
+            --tech-bg: rgba(var(--highlight-color-rgb), 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-color: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --highlight-color-rgb: 0, 102, 204; /* Deep Blue */
+            --accent-color-rgb: 220, 38, 38; /* Rose Red */
+            --icon-color: #ffffff;
+            --tech-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 闪电效果样式 */
+        #lightning-container {
+            position: fixed;
+            top: 200px;
+            right: 30px;
+            width: 250px;
+            height: 250px;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightning-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .lightning-path {
+            stroke: rgba(100, 116, 139, 0.7);
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            opacity: 0;
+        }
+
+        :root[data-theme="dark"] .lightning-path {
+            stroke: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 调整闪电路径的位置 */
+        .lightning-1 {
+            animation: lightning-flash 5s linear infinite;
+            animation-delay: 1.5s;
+            transform: scale(0.5) translate(-50%, -50%);
+        }
+
+        .lightning-2 {
+            animation: lightning-flash 7s linear infinite;
+            animation-delay: 3s;
+            transform: scale(0.5) translate(-20%, -20%);
+        }
+
+        .lightning-3 {
+            animation: lightning-flash 6s linear infinite;
+            animation-delay: 5s;
+            transform: scale(0.5) translate(-30%, -30%);
+        }
+
+        @keyframes lightning-flash {
+            0%, 100% {
+                opacity: 0;
+                stroke-dashoffset: 1000;
+            }
+            0.5%, 0.7% {
+                opacity: 0.8;
+                stroke-dashoffset: 0;
+            }
+            1%, 99% {
+                opacity: 0;
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* 页面过渡效果 */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 导航栏样式 */
+        .nav-bg {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+        }
+
+        /* Logo 动画 */
+        .logo-text {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .logo-letter {
+            display: inline-block;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        a:hover .logo-letter {
+            color: var(--highlight-color);
+            transform: translateY(-2px);
+            transition-delay: calc(var(--index) * 0.05s);
+        }
+
+        /* 高亮文本 */
+        .text-highlight {
+            color: var(--icon-color);
+        }
+
+        /* 链接高亮效果 */
+        .highlight-hover-text {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .highlight-hover-text:hover {
+            color: var(--highlight-color);
+        }
+
+        /* 主题切换图标 */
+        .theme-toggle i {
+            transition: transform 0.5s ease;
+        }
+
+        .theme-toggle:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* 加载动画 */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(var(--highlight-color-rgb), 0.3);
+            border-radius: 50%;
+            border-top-color: var(--highlight-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-color);
+        }
+
+        /* iOS Safari specific CSS */
+        @supports (-webkit-touch-callout: none) {
+            .min-h-screen {
+                min-height: -webkit-fill-available;
+            }
+        }
+        
+        /* TikTok-style flashing effect for logo text */
+        .logo-text {
+            position: relative;
+            display: inline-block;
+            letter-spacing: -1px; /* Even tighter letter spacing */
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+        
+        .logo-letter {
+            display: inline-block;
+            position: relative;
+            transition: color 0.1s ease; /* Faster transition for sharper effect */
+            margin: 0;
+            padding: 0;
+        }
+        
+        @keyframes tiktokFlash {
+            0%, 100% {
+                color: var(--text-primary);
+                text-shadow: none;
+                transform: scale(1);
+            }
+            10% { /* Shorter flash duration */
+                color: var(--highlight-color);
+                text-shadow: 0 0 10px var(--highlight-color);
+                transform: scale(1.05); /* Subtle scale effect */
+            }
+        }
+        
+        /* Apply animation with different delays to create the sequential effect */
+        .logo-letter:nth-child(1) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.0s; }
+        .logo-letter:nth-child(2) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.15s; }
+        .logo-letter:nth-child(3) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.3s; }
+        .logo-letter:nth-child(4) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.45s; }
+        .logo-letter:nth-child(5) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.6s; }
+        .logo-letter:nth-child(6) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.75s; }
+        .logo-letter:nth-child(7) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.9s; }
+        .logo-letter:nth-child(8) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.05s; }
+        .logo-letter:nth-child(9) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.2s; }
+        .logo-letter:nth-child(10) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.35s; }
+        .logo-letter:nth-child(11) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.5s; }
+
+        /* 深色模式底部导航栏样式 */
+        [data-theme="dark"] [data-theme-switch] {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        [data-theme="dark"] .dark-mode-icon {
+            color: white !important;
+        }
+        
+        [data-theme="dark"] .dark-mode-divider {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Page transition overlay -->
+    <div id="page-transition-overlay" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center transition-opacity duration-300" style="background-color: var(--bg-color); opacity: 0;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- 底部悬浮导航栏 -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center items-center p-4" id="bottom-nav">
+        <div class="flex items-center gap-3 px-6 py-3 shadow-lg rounded-full backdrop-blur-md" style="background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.1);" data-theme-switch>
+            <a href="/" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="https://719520.xyz" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
+                <i class="fas fa-globe"></i>
+            </a>
+            <button id="copy-wechat" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon bg-transparent border-0">
+                <i class="fab fa-weixin"></i>
+            </button>
+            
+            <div class="mx-1 h-5 w-px bg-gray-300 dark-mode-divider"></div>
+            
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon theme-toggle bg-transparent border-0">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="back-to-top" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon bg-transparent border-0">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 闪电效果容器 -->
+    <div id="lightning-container" class="fixed pointer-events-none" style="opacity: 1;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
+            <path class="lightning-path lightning-1" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" />
+            <path class="lightning-path lightning-2" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" />
+            <path class="lightning-path lightning-3" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" />
+        </svg>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
+        <!-- 文章头部 -->
+<div class="max-w-5xl mx-auto mb-10" style="margin-top: 20px;">
+    <!-- 文章标题 -->
+    <h1 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--text-primary);">前端项目实战：构建响应式个人作品集网站</h1>
+    
+    <!-- 文章元数据 -->
+    <div class="flex flex-wrap items-center text-sm mb-8 pb-4 border-b" style="color: var(--text-secondary); border-color: var(--card-border);">
+        
+        <div class="mr-6 mb-2">
+            <i class="far fa-calendar-check mr-1"></i>
+            <span>Updated 5月 2025</span>
+        </div>
+        
+        
+        <div class="mr-6 mb-2">
+            <i class="far fa-clock mr-1"></i>
+            <span>Reading time: 31 min</span>
+        </div>
+    </div>
+</div>
+
+<!-- 文章内容 -->
+<div class="max-w-4xl mx-auto relative post-page">
+    <!-- Main Content -->
+    <div class="w-full">
+        <article>
+            <!-- Content -->
+            
+            
+            <div class="prose max-w-none mx-auto">
+                
+                    <div id="article-preview">
+                        <h1 id="前端项目实战：构建响应式个人作品集网站"><a href="#前端项目实战：构建响应式个人作品集网站" class="headerlink" title="前端项目实战：构建响应式个人作品集网站"></a>前端项目实战：构建响应式个人作品集网站</h1><p>作为前端开发者，拥有一个能够展示自己作品的个人网站是非常重要的。无论你是正在寻找工作的大学生，还是想要展示自己技能的自由职业者，一个精心设计的作品集网站都能让你在竞争中脱颖而出。本文将带你从零开始，一步步构建一个响应式的个人作品集网站。</p>
+<h2 id="项目规划与设计"><a href="#项目规划与设计" class="headerlink" title="项目规划与设计"></a>项目规划与设计</h2><p>在开始编码之前，我们需要先进行项目规划和设计。这个阶段包括：</p>
+<h3 id="1-确定网站结构"><a href="#1-确定网站结构" class="headerlink" title="1. 确定网站结构"></a>1. 确定网站结构</h3><p>一个典型的作品集网站通常包含以下几个部分：</p>
+<ul>
+<li><strong>首页</strong>：简短的个人介绍和最新&#x2F;最佳作品展示</li>
+<li><strong>关于我</strong>：详细的个人介绍、技能和经历</li>
+<li><strong>作品集</strong>：所有项目的展示区域</li>
+<li><strong>单个项目页面</strong>：每个项目的详细介绍</li>
+<li><strong>联系方式</strong>：让访问者能够联系到你</li>
+</ul>
+<h3 id="2-设计网站风格"><a href="#2-设计网站风格" class="headerlink" title="2. 设计网站风格"></a>2. 设计网站风格</h3><p>选择一个能够反映你个人风格的设计是很重要的。可以考虑以下几点：</p>
+<ul>
+<li>配色方案：选择2-3种主要颜色，保持整体一致性</li>
+<li>排版：选择清晰易读的字体，设置合适的字号和行高</li>
+<li>布局：使用网格系统，确保各元素排列整齐</li>
+<li>响应式：确保在各种设备上都能良好显示</li>
+</ul>
+<h2 id="HTML结构搭建"><a href="#HTML结构搭建" class="headerlink" title="HTML结构搭建"></a>HTML结构搭建</h2><p>首先，我们需要创建基本的HTML结构。以下是首页的基本结构：</p><span id="article-truncation-point"></span>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;zh-CN&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>我的前端作品集 | 前端开发者<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;css/style.css&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 导航栏 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">header</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">nav</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;logo&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;index.html&quot;</span>&gt;</span>我的作品集<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">&quot;nav-links&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;index.html&quot;</span> <span class="attr">class</span>=<span class="string">&quot;active&quot;</span>&gt;</span>首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;about.html&quot;</span>&gt;</span>关于我<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;projects.html&quot;</span>&gt;</span>作品集<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;contact.html&quot;</span>&gt;</span>联系我<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;burger&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;line1&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;line2&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;line3&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">nav</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">header</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 英雄区域 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">&quot;hero&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;hero-content&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">h1</span>&gt;</span>你好，我是<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;highlight&quot;</span>&gt;</span>前端开发者<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>我专注于创建美观、实用、高性能的网站和应用程序<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;hero-buttons&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;projects.html&quot;</span> <span class="attr">class</span>=<span class="string">&quot;btn primary-btn&quot;</span>&gt;</span>查看作品<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;contact.html&quot;</span> <span class="attr">class</span>=<span class="string">&quot;btn secondary-btn&quot;</span>&gt;</span>联系我<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;hero-image&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;img/hero-image.svg&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;前端开发插图&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 精选作品 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">&quot;featured-projects&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h2</span> <span class="attr">class</span>=<span class="string">&quot;section-title&quot;</span>&gt;</span>精选作品<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;projects-grid&quot;</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 项目卡片将在这里 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;center&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;projects.html&quot;</span> <span class="attr">class</span>=<span class="string">&quot;btn primary-btn&quot;</span>&gt;</span>查看全部作品<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 技能展示 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">section</span> <span class="attr">class</span>=<span class="string">&quot;skills&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h2</span> <span class="attr">class</span>=<span class="string">&quot;section-title&quot;</span>&gt;</span>我的技能<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;skills-grid&quot;</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 技能卡片将在这里 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">section</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 页脚 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">footer</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;footer-content&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;footer-logo&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>我的作品集<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">p</span>&gt;</span>专注于前端开发与用户体验设计<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;footer-links&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">h4</span>&gt;</span>导航<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;index.html&quot;</span>&gt;</span>首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;about.html&quot;</span>&gt;</span>关于我<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;projects.html&quot;</span>&gt;</span>作品集<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;contact.html&quot;</span>&gt;</span>联系我<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;footer-social&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">h4</span>&gt;</span>社交媒体<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;social-icons&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;fab fa-github&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;fab fa-linkedin&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;fab fa-weixin&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;fab fa-weibo&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;footer-bottom&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="symbol">&amp;copy;</span> 2024 我的作品集. 保留所有权利.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;js/script.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="CSS样式设计"><a href="#CSS样式设计" class="headerlink" title="CSS样式设计"></a>CSS样式设计</h2><p>接下来，我们需要编写CSS来美化我们的网站。我们将使用Flexbox和Grid布局，以及媒体查询来实现响应式设计。</p>
+<h3 id="基础样式"><a href="#基础样式" class="headerlink" title="基础样式"></a>基础样式</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 基础样式 */</span></span><br><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">    <span class="attr">--primary-color</span>: <span class="number">#4a6cf7</span>;</span><br><span class="line">    <span class="attr">--secondary-color</span>: <span class="number">#6c757d</span>;</span><br><span class="line">    <span class="attr">--dark-color</span>: <span class="number">#212529</span>;</span><br><span class="line">    <span class="attr">--light-color</span>: <span class="number">#f8f9fa</span>;</span><br><span class="line">    <span class="attr">--success-color</span>: <span class="number">#28a745</span>;</span><br><span class="line">    <span class="attr">--danger-color</span>: <span class="number">#dc3545</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">* &#123;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">box-sizing</span>: border-box;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&#x27;Segoe UI&#x27;</span>, Tahoma, Geneva, Verdana, sans-serif;</span><br><span class="line">    <span class="attribute">line-height</span>: <span class="number">1.6</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--dark-color);</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">var</span>(--light-color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">90%</span>;</span><br><span class="line">    <span class="attribute">max-width</span>: <span class="number">1200px</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">0</span> <span class="number">15px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">    <span class="attribute">text-decoration</span>: none;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--dark-color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">ul</span> &#123;</span><br><span class="line">    <span class="attribute">list-style</span>: none;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.btn</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: inline-block;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">12px</span> <span class="number">24px</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">4px</span>;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">600</span>;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">    <span class="attribute">transition</span>: all <span class="number">0.3s</span> ease;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.primary-btn</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">var</span>(--primary-color);</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.primary-btn</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#3a5bd9</span>;</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-<span class="number">3px</span>);</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">5px</span> <span class="number">15px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.secondary-btn</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: transparent;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">2px</span> solid <span class="built_in">var</span>(--primary-color);</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--primary-color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.secondary-btn</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">var</span>(--primary-color);</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-<span class="number">3px</span>);</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">5px</span> <span class="number">15px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.section-title</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="attribute">margin-bottom</span>: <span class="number">40px</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">2rem</span>;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.section-title</span><span class="selector-pseudo">::after</span> &#123;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">bottom</span>: -<span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">translateX</span>(-<span class="number">50%</span>);</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">60px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">4px</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">var</span>(--primary-color);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="响应式导航栏"><a href="#响应式导航栏" class="headerlink" title="响应式导航栏"></a>响应式导航栏</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 导航栏样式 */</span></span><br><span class="line"><span class="selector-tag">header</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: white;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">2px</span> <span class="number">10px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.1</span>);</span><br><span class="line">    <span class="attribute">position</span>: sticky;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">z-index</span>: <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">nav</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">    <span class="attribute">justify-content</span>: space-between;</span><br><span class="line">    <span class="attribute">align-items</span>: center;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">20px</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.logo</span> <span class="selector-tag">a</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">1.5rem</span>;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">700</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--primary-color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.nav-links</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: flex;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.nav-links</span> <span class="selector-tag">li</span> &#123;</span><br><span class="line">    <span class="attribute">margin-left</span>: <span class="number">30px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.nav-links</span> <span class="selector-tag">a</span> &#123;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">500</span>;</span><br><span class="line">    <span class="attribute">transition</span>: color <span class="number">0.3s</span> ease;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.nav-links</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span>,</span><br><span class="line"><span class="selector-class">.nav-links</span> <span class="selector-tag">a</span><span class="selector-class">.active</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--primary-color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.burger</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: none;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.burger</span> <span class="selector-tag">div</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">25px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">3px</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="built_in">var</span>(--dark-color);</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">5px</span>;</span><br><span class="line">    <span class="attribute">transition</span>: all <span class="number">0.3s</span> ease;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">max-width</span>: <span class="number">768px</span>) &#123;</span><br><span class="line">    <span class="selector-class">.nav-links</span> &#123;</span><br><span class="line">        <span class="attribute">position</span>: absolute;</span><br><span class="line">        <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">        <span class="attribute">height</span>: <span class="built_in">calc</span>(<span class="number">100vh</span> - <span class="number">60px</span>);</span><br><span class="line">        <span class="attribute">top</span>: <span class="number">60px</span>;</span><br><span class="line">        <span class="attribute">background-color</span>: white;</span><br><span class="line">        <span class="attribute">display</span>: flex;</span><br><span class="line">        <span class="attribute">flex-direction</span>: column;</span><br><span class="line">        <span class="attribute">align-items</span>: center;</span><br><span class="line">        <span class="attribute">width</span>: <span class="number">50%</span>;</span><br><span class="line">        <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">100%</span>);</span><br><span class="line">        <span class="attribute">transition</span>: transform <span class="number">0.5s</span> ease-in;</span><br><span class="line">        <span class="attribute">box-shadow</span>: -<span class="number">2px</span> <span class="number">0</span> <span class="number">5px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="selector-class">.nav-links</span> <span class="selector-tag">li</span> &#123;</span><br><span class="line">        <span class="attribute">margin</span>: <span class="number">20px</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="selector-class">.burger</span> &#123;</span><br><span class="line">        <span class="attribute">display</span>: block;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="selector-class">.nav-active</span> &#123;</span><br><span class="line">        <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">0%</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="JavaScript功能实现"><a href="#JavaScript功能实现" class="headerlink" title="JavaScript功能实现"></a>JavaScript功能实现</h2><p>最后，我们需要添加一些JavaScript来实现交互功能，例如移动端导航菜单、项目过滤和滚动动画等。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 移动端导航菜单</span></span><br><span class="line"><span class="keyword">const</span> burger = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.burger&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> nav = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.nav-links&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> navLinks = <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;.nav-links li&#x27;</span>);</span><br><span class="line"></span><br><span class="line">burger.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 切换导航菜单</span></span><br><span class="line">    nav.<span class="property">classList</span>.<span class="title function_">toggle</span>(<span class="string">&#x27;nav-active&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 动画链接</span></span><br><span class="line">    navLinks.<span class="title function_">forEach</span>(<span class="function">(<span class="params">link, index</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (link.<span class="property">style</span>.<span class="property">animation</span>) &#123;</span><br><span class="line">            link.<span class="property">style</span>.<span class="property">animation</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            link.<span class="property">style</span>.<span class="property">animation</span> = <span class="string">`navLinkFade 0.5s ease forwards <span class="subst">$&#123;index / <span class="number">7</span> + <span class="number">0.3</span>&#125;</span>s`</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 汉堡按钮动画</span></span><br><span class="line">    burger.<span class="property">classList</span>.<span class="title function_">toggle</span>(<span class="string">&#x27;toggle&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 滚动动画</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;scroll&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> sections = <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;section&#x27;</span>);</span><br><span class="line">    </span><br><span class="line">    sections.<span class="title function_">forEach</span>(<span class="function"><span class="params">section</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> sectionTop = section.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span>;</span><br><span class="line">        <span class="keyword">const</span> windowHeight = <span class="variable language_">window</span>.<span class="property">innerHeight</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (sectionTop &lt; windowHeight * <span class="number">0.75</span>) &#123;</span><br><span class="line">            section.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&#x27;show-animate&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 项目过滤功能（用于作品集页面）</span></span><br><span class="line"><span class="keyword">const</span> filterButtons = <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;.filter-btn&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> projectItems = <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;.project-item&#x27;</span>);</span><br><span class="line"></span><br><span class="line">filterButtons.<span class="title function_">forEach</span>(<span class="function"><span class="params">button</span> =&gt;</span> &#123;</span><br><span class="line">    button.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 移除所有按钮的active类</span></span><br><span class="line">        filterButtons.<span class="title function_">forEach</span>(<span class="function"><span class="params">btn</span> =&gt;</span> btn.<span class="property">classList</span>.<span class="title function_">remove</span>(<span class="string">&#x27;active&#x27;</span>));</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 添加当前按钮的active类</span></span><br><span class="line">        button.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&#x27;active&#x27;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">const</span> filterValue = button.<span class="title function_">getAttribute</span>(<span class="string">&#x27;data-filter&#x27;</span>);</span><br><span class="line">        </span><br><span class="line">        projectItems.<span class="title function_">forEach</span>(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (filterValue === <span class="string">&#x27;all&#x27;</span> || item.<span class="property">classList</span>.<span class="title function_">contains</span>(filterValue)) &#123;</span><br><span class="line">                item.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&#x27;block&#x27;</span>;</span><br><span class="line">                <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">                    item.<span class="property">classList</span>.<span class="title function_">add</span>(<span class="string">&#x27;show&#x27;</span>);</span><br><span class="line">                &#125;, <span class="number">50</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                item.<span class="property">classList</span>.<span class="title function_">remove</span>(<span class="string">&#x27;show&#x27;</span>);</span><br><span class="line">                <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">                    item.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&#x27;none&#x27;</span>;</span><br><span class="line">                &#125;, <span class="number">300</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="响应式设计的关键点"><a href="#响应式设计的关键点" class="headerlink" title="响应式设计的关键点"></a>响应式设计的关键点</h2><p>在构建响应式作品集网站时，需要特别注意以下几点：</p>
+<ol>
+<li><strong>使用相对单位</strong>：使用百分比、em、rem等相对单位，而不是固定像素</li>
+<li><strong>弹性布局</strong>：使用Flexbox和Grid进行布局</li>
+<li><strong>媒体查询</strong>：针对不同屏幕尺寸设置不同的样式</li>
+<li><strong>响应式图片</strong>：确保图片能够适应不同的屏幕尺寸</li>
+<li><strong>触摸友好</strong>：确保在触摸设备上有良好的体验，如更大的点击区域</li>
+</ol>
+<h2 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h2><p>一个专业的作品集网站还需要考虑性能优化：</p>
+<ol>
+<li><strong>压缩资源</strong>：压缩CSS、JavaScript和图片文件</li>
+<li><strong>懒加载</strong>：对于图片和视频使用懒加载</li>
+<li><strong>减少HTTP请求</strong>：合并CSS和JavaScript文件</li>
+<li><strong>使用CDN</strong>：使用内容分发网络加速资源加载</li>
+<li><strong>优化字体</strong>：使用系统字体或优化加载Web字体</li>
+</ol>
+<h2 id="部署网站"><a href="#部署网站" class="headerlink" title="部署网站"></a>部署网站</h2><p>完成开发后，你需要将网站部署到服务器上。以下是几个适合部署个人作品集网站的平台：</p>
+<ol>
+<li><strong>GitHub Pages</strong>：免费且易于使用，适合静态网站</li>
+<li><strong>Netlify</strong>：提供免费套餐，支持持续部署</li>
+<li><strong>Vercel</strong>：专为前端应用设计，有免费套餐</li>
+<li><strong>阿里云&#x2F;腾讯云</strong>：国内服务器，访问速度更快</li>
+</ol>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>构建一个响应式的个人作品集网站是展示你前端技能的绝佳方式。通过本文介绍的步骤和技术，你可以创建一个专业、美观且功能齐全的作品集网站。记住，一个好的作品集网站不仅要展示你的技术能力，还要体现你的设计审美和对用户体验的理解。</p>
+<p>希望本教程对你有所帮助，祝你在前端开发的道路上取得成功！</p>
+<hr>
+<p>你有什么问题或者想法？欢迎在评论区留言讨论！</p>
+
+                    </div>
+                    <div id="load-more-container" class="text-center mt-8 mb-6">
+                        <button id="load-more-button" class="px-6 py-2 rounded-lg transition-all duration-300 ease-in-out font-medium" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color);">
+                            
+                            <span id="load-more-text">阅读更多</span>
+                            <i class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                    </div>
+                
+            </div>
+        </article>
+    </div>
+</div>
+
+<style>
+/* 添加一点过渡效果 */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    scroll-margin-top: calc(var(--nav-height) + 1rem);
+    transition: color 0.3s ease;
+}
+
+/* 优化文章内容宽度 */
+.prose {
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+/* 针对不同屏幕尺寸优化阅读体验 */
+@media (max-width: 768px) {
+    .prose {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}
+
+/* 优化图片显示 */
+.prose img {
+    margin: 1.5rem auto;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Load More Button Styles */
+#load-more-button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    background-color: transparent !important;
+}
+
+#load-more-button:hover {
+    transform: translateY(-2px);
+    border-color: var(--highlight-color) !important;
+    color: var(--highlight-color) !important;
+}
+
+#load-more-button:active {
+    transform: translateY(0);
+}
+
+#load-more-button::before {
+    display: none; /* 移除之前的背景效果 */
+}
+
+#load-more-button:hover i {
+    color: var(--highlight-color);
+}
+
+#article-preview {
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#article-preview.truncated {
+    position: relative;
+    overflow: hidden;
+}
+
+#article-preview.truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to bottom, 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0), 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0.8) 70%, 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0.95) 90%);
+    pointer-events: none;
+}
+
+/* 添加深色模式下的渐变效果 */
+[data-theme="dark"] #article-preview.truncated::after {
+    background: linear-gradient(to bottom, 
+                              rgba(15, 23, 42, 0), 
+                              rgba(15, 23, 42, 0.8) 70%, 
+                              rgba(15, 23, 42, 0.95) 90%);
+}
+
+#load-more-container {
+    position: relative;
+    z-index: 5;
+    margin-top: -50px;
+    padding-top: 70px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get background color and convert to RGB for gradient
+    const computeRGBFromCardBgColor = () => {
+        // 检查当前主题
+        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+        
+        // 根据主题使用不同的背景色
+        const cardBgColor = isDarkTheme ? 
+            '#0f172a' : // 深色模式背景色
+            (getComputedStyle(document.documentElement).getPropertyValue('--bg-color') || '#ffffff'); // 浅色模式背景色
+        
+        // Function to convert hex/rgb color to rgb values
+        const getRGBValues = (color) => {
+            // Create a temporary element
+            const temp = document.createElement('div');
+            temp.style.color = color;
+            temp.style.display = 'none';
+            document.body.appendChild(temp);
+            
+            // Get computed color
+            const computedColor = getComputedStyle(temp).color;
+            document.body.removeChild(temp);
+            
+            // Extract RGB values
+            const match = computedColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+            if (match) {
+                return `${match[1]}, ${match[2]}, ${match[3]}`;
+            }
+            
+            return isDarkTheme ? '15, 23, 42' : '255, 255, 255'; // 根据主题提供默认值
+        };
+        
+        // Set the RGB values as a CSS variable
+        const rgbValues = getRGBValues(cardBgColor);
+        document.documentElement.style.setProperty('--card-bg-rgb', rgbValues);
+    };
+    
+    // Compute RGB values
+    computeRGBFromCardBgColor();
+    
+    // 监听主题变化事件
+    document.addEventListener('themeChanged', function(event) {
+        // 重新计算背景颜色
+        computeRGBFromCardBgColor();
+    });
+    
+    const articlePreview = document.getElementById('article-preview');
+    const loadMoreButton = document.getElementById('load-more-button');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const loadMoreText = document.getElementById('load-more-text');
+    
+    if (articlePreview && loadMoreButton) {
+        const truncationPoint = document.getElementById('article-truncation-point');
+        
+        if (truncationPoint) {
+            // Get the position of the truncation point, with safety margin
+            const truncationPos = truncationPoint.offsetTop + 50;
+            
+            // Store original article height for animation
+            const fullHeight = articlePreview.scrollHeight;
+            
+            // Initially set the article as truncated with transition
+            articlePreview.style.transition = 'max-height 0.5s ease-in-out';
+            articlePreview.classList.add('truncated');
+            
+            // Set timeout to ensure transition works properly
+            setTimeout(() => {
+                articlePreview.style.maxHeight = truncationPos + 'px';
+            }, 10);
+            
+            // Check if content is primarily Chinese
+            const isChineseContent = (function() {
+                const content = articlePreview.textContent || '';
+                const sampleText = content.substring(0, 2000);
+                const chineseCount = (sampleText.match(/[\u4e00-\u9fa5]/g) || []).length;
+                return chineseCount > 150;
+            })();
+            
+            // Set button text based on language
+            const moreText = isChineseContent ? '阅读更多' : 'Load more';
+            const lessText = isChineseContent ? '收起内容' : 'Show less';
+            
+            // Handle load more button click
+            loadMoreButton.addEventListener('click', function() {
+                if (articlePreview.classList.contains('truncated')) {
+                    // Expand article
+                    articlePreview.classList.remove('truncated');
+                    articlePreview.style.maxHeight = fullHeight + 'px';
+                    
+                    // After animation completes, set to 'none' to handle any dynamic content changes
+                    setTimeout(() => {
+                        articlePreview.style.maxHeight = 'none';
+                    }, 500);
+                    
+                    // Update button
+                    loadMoreText.textContent = lessText;
+                    loadMoreButton.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    // Collapse article - first set a fixed height for animation
+                    articlePreview.style.maxHeight = articlePreview.scrollHeight + 'px';
+                    
+                    // Force reflow to ensure the browser registers the maxHeight change
+                    void articlePreview.offsetWidth;
+                    
+                    // Then add the truncated class and reduce height
+                    articlePreview.classList.add('truncated');
+                    articlePreview.style.maxHeight = truncationPos + 'px';
+                    
+                    // Update button
+                    loadMoreText.textContent = moreText;
+                    loadMoreButton.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    
+                    // Scroll back to the top of the article
+                    window.scrollTo({
+                        top: articlePreview.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (articlePreview.classList.contains('truncated')) {
+                    // Update max height based on current truncation point position
+                    articlePreview.style.maxHeight = truncationPoint.offsetTop + 50 + 'px';
+                }
+            });
+        } else {
+            // No truncation point found - hide the button
+            loadMoreContainer.style.display = 'none';
+        }
+    }
+});
+</script> 
+    </div>
+
+    <!-- 页脚 - 添加底部padding以避免内容被导航栏遮挡 -->
+    <footer class="py-6 pb-20 border-t mt-8" style="border-color: var(--border-color);">
+        <div class="container mx-auto px-4 flex flex-col items-center">
+            <p class="text-center text-sm text-secondary mb-1">
+                &copy; 2025 Rick's Blog. Powered by Hexo&Rick
+            </p>
+        </div>
+    </footer>
+
+    <!-- 主題切換通知容器 - 預先創建 -->
+    <div id="theme-notification" class="fixed opacity-0 transition-opacity duration-300" style="bottom: 100px; right: 20px; padding: 8px 16px; border-radius: 4px; z-index: 9999; font-size: 14px; display: none;"></div>
+    
+    <!-- Custom JS -->
+    <script src="/js/script.js" defer></script>
+    <script src="/js/post-cards.js"></script>
+    <script>
+        // 主题切换相关代码
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // 显示特殊闪电效果（主题切换专用）
+            const lightningContainer = document.getElementById('lightning-container');
+            
+            // 创建临时闪电效果
+            const tempLightning = document.createElement('div');
+            tempLightning.className = 'fixed inset-0 pointer-events-none z-[9998]';
+            tempLightning.style.opacity = '1';
+            tempLightning.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
+                    <path class="lightning-path" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
+                    <path class="lightning-path" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
+                    <path class="lightning-path" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
+                </svg>
+            `;
+            document.body.appendChild(tempLightning);
+            
+            // 临时隐藏常规闪电效果
+            if (lightningContainer) {
+                lightningContainer.style.opacity = '0';
+            }
+            
+            // 延迟切换主题，让闪电效果先显示
+            setTimeout(() => {
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // 更新主题图标
+                const themeIcons = document.querySelectorAll('.theme-toggle i');
+                themeIcons.forEach(icon => {
+                    if (newTheme === 'dark') {
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                    } else {
+                        icon.classList.remove('fa-sun');
+                        icon.classList.add('fa-moon');
+                    }
+                });
+                
+                // 显示主题切换通知
+                showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
+                
+                // 触发自定义事件，通知其他脚本主题已更改
+                const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
+                document.dispatchEvent(themeChangeEvent);
+                
+                // 隐藏临时闪电效果并恢复常规闪电效果
+                setTimeout(() => {
+                    if (tempLightning.parentNode) {
+                        tempLightning.parentNode.removeChild(tempLightning);
+                    }
+                    if (lightningContainer) {
+                        lightningContainer.style.opacity = '1';
+                    }
+                }, 2000);
+            }, 100);
+        }
+
+        // 通知系统
+        function showNotification(message, duration = 2000) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full text-sm z-[9999] transition-all duration-300';
+            notification.style.backgroundColor = 'var(--bg-card)';
+            notification.style.color = 'var(--text-color)';
+            notification.style.border = '1px solid var(--border-color)';
+            notification.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+            notification.innerText = message;
+            
+            document.body.appendChild(notification);
+            
+            // 确保元素已添加到DOM后再添加opacity过渡效果
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, duration);
+        }
+
+        // 初始化主题
+        function initTheme() {
+            let theme = localStorage.getItem('theme');
+            
+            if (!theme) {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const currentHour = new Date().getHours();
+                const isNight = currentHour < 6 || currentHour >= 18;
+                
+                theme = prefersDark || isNight ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            }
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // 更新主题图标
+            const themeIcons = document.querySelectorAll('.theme-toggle i');
+            themeIcons.forEach(icon => {
+                if (theme === 'dark') {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+        }
+
+        // 初始化主题
+        initTheme();
+
+        // 移除底部导航栏的显示/隐藏逻辑，使其始终可见
+        const bottomNav = document.getElementById('bottom-nav');
+        bottomNav.style.transform = 'translateY(0)'; // 确保导航栏始终可见
+        
+        // 返回顶部按钮功能
+        document.getElementById('back-to-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 微信号复制功能
+        document.getElementById('copy-wechat').addEventListener('click', function() {
+            const wechatId = "378778778";
+            navigator.clipboard.writeText(wechatId).then(function() {
+                showNotification('微信号已复制: ' + wechatId);
+            }).catch(function(err) {
+                console.error('复制微信号失败: ', err);
+                // 兼容性处理
+                const textarea = document.createElement('textarea');
+                textarea.value = wechatId;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification('微信号已复制: ' + wechatId);
+            });
+        });
+    </script>
+    
+    <!-- Logo切换脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Since we're now using text instead of logo images, 
+            // this script is no longer needed but we'll keep it 
+            // to avoid breaking any references to it elsewhere
+        });
+    </script>
+</body>
+</html> 

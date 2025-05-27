@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="box-sizing: border-box; overflow-x: hidden;">
+<head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="这是一个使用Hexo搭建的个人博客，主要分享技术文章和生活感悟">
+<meta name="keywords" content="博客,技术,编程,生活">
+<meta name="author" content="博主名字">
+<meta name="generator" content="Hexo">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico"> 
+<!-- Theme meta tag -->
+<meta name="color-scheme" content="light dark">
+<title> - HTML5高级特性：Canvas绘图与本地存储</title>
+<!-- Theme Style -->
+
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Logo CSS removed as we're now using text instead of images -->
+
+<!-- Open Graph 协议 -->
+<meta property="og:title" content="">
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://example.com">
+<meta property="og:description" content="这是一个使用Hexo搭建的个人博客，主要分享技术文章和生活感悟"> 
+    <!-- Theme detection script - must be first -->
+    <script>
+        (function() {
+            // Function to check if current time is between 7am and 8pm
+            function isDayTime() {
+                const hour = new Date().getHours();
+                return hour >= 7 && hour < 20; // 7am to 8pm
+            }
+            
+            // Get theme from localStorage or use auto based on time
+            const savedThemePreference = localStorage.getItem('themePreference') || 'auto';
+            
+            // If auto preference or no preference saved, set theme based on time
+            if (savedThemePreference === 'auto') {
+                const autoTheme = isDayTime() ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', autoTheme);
+                localStorage.setItem('theme', autoTheme);
+            } else {
+                // Use the saved theme if user has manually set a preference
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        })();
+    </script>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <!-- Font Awesome via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Boxicons via CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 禁用hover效果 -->
+    <link rel="stylesheet" href="/css/no-hover.css">
+    <style>
+        /* 全局盒模型规则 */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 基础颜色变量 */
+            --bg-color: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --highlight-color: var(--custom-blue);
+            --highlight-color-rgb: 0, 102, 204; /* Deep Blue */
+            --accent-color: var(--custom-red);
+            --accent-color-rgb: 220, 38, 38; /* Rose Red */
+            --custom-blue: #0066cc; /* Deep Blue */
+            --custom-red: #dc2626; /* Rose Red */
+            --icon-color: var(--highlight-color);
+            --tech-bg: rgba(var(--highlight-color-rgb), 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-color: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --highlight-color-rgb: 0, 102, 204; /* Deep Blue */
+            --accent-color-rgb: 220, 38, 38; /* Rose Red */
+            --icon-color: #ffffff;
+            --tech-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 闪电效果样式 */
+        #lightning-container {
+            position: fixed;
+            top: 200px;
+            right: 30px;
+            width: 250px;
+            height: 250px;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightning-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .lightning-path {
+            stroke: rgba(100, 116, 139, 0.7);
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            opacity: 0;
+        }
+
+        :root[data-theme="dark"] .lightning-path {
+            stroke: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 调整闪电路径的位置 */
+        .lightning-1 {
+            animation: lightning-flash 5s linear infinite;
+            animation-delay: 1.5s;
+            transform: scale(0.5) translate(-50%, -50%);
+        }
+
+        .lightning-2 {
+            animation: lightning-flash 7s linear infinite;
+            animation-delay: 3s;
+            transform: scale(0.5) translate(-20%, -20%);
+        }
+
+        .lightning-3 {
+            animation: lightning-flash 6s linear infinite;
+            animation-delay: 5s;
+            transform: scale(0.5) translate(-30%, -30%);
+        }
+
+        @keyframes lightning-flash {
+            0%, 100% {
+                opacity: 0;
+                stroke-dashoffset: 1000;
+            }
+            0.5%, 0.7% {
+                opacity: 0.8;
+                stroke-dashoffset: 0;
+            }
+            1%, 99% {
+                opacity: 0;
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* 页面过渡效果 */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 导航栏样式 */
+        .nav-bg {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+        }
+
+        /* Logo 动画 */
+        .logo-text {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .logo-letter {
+            display: inline-block;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        a:hover .logo-letter {
+            color: var(--highlight-color);
+            transform: translateY(-2px);
+            transition-delay: calc(var(--index) * 0.05s);
+        }
+
+        /* 高亮文本 */
+        .text-highlight {
+            color: var(--icon-color);
+        }
+
+        /* 链接高亮效果 */
+        .highlight-hover-text {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .highlight-hover-text:hover {
+            color: var(--highlight-color);
+        }
+
+        /* 主题切换图标 */
+        .theme-toggle i {
+            transition: transform 0.5s ease;
+        }
+
+        .theme-toggle:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* 加载动画 */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(var(--highlight-color-rgb), 0.3);
+            border-radius: 50%;
+            border-top-color: var(--highlight-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-color);
+        }
+
+        /* iOS Safari specific CSS */
+        @supports (-webkit-touch-callout: none) {
+            .min-h-screen {
+                min-height: -webkit-fill-available;
+            }
+        }
+        
+        /* TikTok-style flashing effect for logo text */
+        .logo-text {
+            position: relative;
+            display: inline-block;
+            letter-spacing: -1px; /* Even tighter letter spacing */
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+        
+        .logo-letter {
+            display: inline-block;
+            position: relative;
+            transition: color 0.1s ease; /* Faster transition for sharper effect */
+            margin: 0;
+            padding: 0;
+        }
+        
+        @keyframes tiktokFlash {
+            0%, 100% {
+                color: var(--text-primary);
+                text-shadow: none;
+                transform: scale(1);
+            }
+            10% { /* Shorter flash duration */
+                color: var(--highlight-color);
+                text-shadow: 0 0 10px var(--highlight-color);
+                transform: scale(1.05); /* Subtle scale effect */
+            }
+        }
+        
+        /* Apply animation with different delays to create the sequential effect */
+        .logo-letter:nth-child(1) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.0s; }
+        .logo-letter:nth-child(2) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.15s; }
+        .logo-letter:nth-child(3) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.3s; }
+        .logo-letter:nth-child(4) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.45s; }
+        .logo-letter:nth-child(5) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.6s; }
+        .logo-letter:nth-child(6) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.75s; }
+        .logo-letter:nth-child(7) { animation: tiktokFlash 1.8s infinite; animation-delay: 0.9s; }
+        .logo-letter:nth-child(8) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.05s; }
+        .logo-letter:nth-child(9) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.2s; }
+        .logo-letter:nth-child(10) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.35s; }
+        .logo-letter:nth-child(11) { animation: tiktokFlash 1.8s infinite; animation-delay: 1.5s; }
+
+        /* 深色模式底部导航栏样式 */
+        [data-theme="dark"] [data-theme-switch] {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        [data-theme="dark"] .dark-mode-icon {
+            color: white !important;
+        }
+        
+        [data-theme="dark"] .dark-mode-divider {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Page transition overlay -->
+    <div id="page-transition-overlay" class="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center transition-opacity duration-300" style="background-color: var(--bg-color); opacity: 0;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- 底部悬浮导航栏 -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center items-center p-4" id="bottom-nav">
+        <div class="flex items-center gap-3 px-6 py-3 shadow-lg rounded-full backdrop-blur-md" style="background-color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.1);" data-theme-switch>
+            <a href="/" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="https://719520.xyz" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
+                <i class="fas fa-globe"></i>
+            </a>
+            <button id="copy-wechat" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon bg-transparent border-0">
+                <i class="fab fa-weixin"></i>
+            </button>
+            
+            <div class="mx-1 h-5 w-px bg-gray-300 dark-mode-divider"></div>
+            
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon theme-toggle bg-transparent border-0">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="back-to-top" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon bg-transparent border-0">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 闪电效果容器 -->
+    <div id="lightning-container" class="fixed pointer-events-none" style="opacity: 1;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
+            <path class="lightning-path lightning-1" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" />
+            <path class="lightning-path lightning-2" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" />
+            <path class="lightning-path lightning-3" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" />
+        </svg>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
+        <!-- 文章头部 -->
+<div class="max-w-5xl mx-auto mb-10" style="margin-top: 20px;">
+    <!-- 文章标题 -->
+    <h1 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--text-primary);">HTML5高级特性：Canvas绘图与本地存储</h1>
+    
+    <!-- 文章元数据 -->
+    <div class="flex flex-wrap items-center text-sm mb-8 pb-4 border-b" style="color: var(--text-secondary); border-color: var(--card-border);">
+        
+        <div class="mr-6 mb-2">
+            <i class="far fa-calendar-check mr-1"></i>
+            <span>Updated 5月 2025</span>
+        </div>
+        
+        
+        <div class="mr-6 mb-2">
+            <i class="far fa-clock mr-1"></i>
+            <span>Reading time: 16 min</span>
+        </div>
+    </div>
+</div>
+
+<!-- 文章内容 -->
+<div class="max-w-4xl mx-auto relative post-page">
+    <!-- Main Content -->
+    <div class="w-full">
+        <article>
+            <!-- Content -->
+            
+            
+            <div class="prose max-w-none mx-auto">
+                
+                    <div id="article-preview">
+                        <h1 id="HTML5高级特性：Canvas绘图与本地存储"><a href="#HTML5高级特性：Canvas绘图与本地存储" class="headerlink" title="HTML5高级特性：Canvas绘图与本地存储"></a>HTML5高级特性：Canvas绘图与本地存储</h1><p>HTML5带来了许多革命性的新特性，使Web应用程序能够实现以前只有原生应用才能实现的功能。本文将深入探讨两个强大的HTML5功能：Canvas绘图API和本地存储技术。</p>
+<h2 id="Canvas绘图API"><a href="#Canvas绘图API" class="headerlink" title="Canvas绘图API"></a>Canvas绘图API</h2><p>Canvas是HTML5引入的一个强大元素，它提供了一个可编程的绘图区域，允许开发者使用JavaScript动态生成和渲染图形、图表、图像和动画。</p>
+<h3 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h3><p>首先，在HTML中创建一个Canvas元素：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;myCanvas&quot;</span> <span class="attr">width</span>=<span class="string">&quot;600&quot;</span> <span class="attr">height</span>=<span class="string">&quot;400&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，使用JavaScript获取Canvas上下文并开始绘图：</p><span id="article-truncation-point"></span>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> canvas = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;myCanvas&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> ctx = canvas.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘制一个红色矩形</span></span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;red&#x27;</span>;</span><br><span class="line">ctx.<span class="title function_">fillRect</span>(<span class="number">50</span>, <span class="number">50</span>, <span class="number">100</span>, <span class="number">75</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘制一条线</span></span><br><span class="line">ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">ctx.<span class="title function_">moveTo</span>(<span class="number">200</span>, <span class="number">50</span>);</span><br><span class="line">ctx.<span class="title function_">lineTo</span>(<span class="number">300</span>, <span class="number">150</span>);</span><br><span class="line">ctx.<span class="property">strokeStyle</span> = <span class="string">&#x27;blue&#x27;</span>;</span><br><span class="line">ctx.<span class="property">lineWidth</span> = <span class="number">5</span>;</span><br><span class="line">ctx.<span class="title function_">stroke</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘制一个圆</span></span><br><span class="line">ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">ctx.<span class="title function_">arc</span>(<span class="number">400</span>, <span class="number">100</span>, <span class="number">50</span>, <span class="number">0</span>, <span class="title class_">Math</span>.<span class="property">PI</span> * <span class="number">2</span>);</span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;green&#x27;</span>;</span><br><span class="line">ctx.<span class="title function_">fill</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="绘制图像"><a href="#绘制图像" class="headerlink" title="绘制图像"></a>绘制图像</h3><p>Canvas可以绘制和操作图像：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> img = <span class="keyword">new</span> <span class="title class_">Image</span>();</span><br><span class="line">img.<span class="property">src</span> = <span class="string">&#x27;example.jpg&#x27;</span>;</span><br><span class="line">img.<span class="property">onload</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 绘制原始图像</span></span><br><span class="line">  ctx.<span class="title function_">drawImage</span>(img, <span class="number">50</span>, <span class="number">200</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 绘制缩放的图像</span></span><br><span class="line">  ctx.<span class="title function_">drawImage</span>(img, <span class="number">300</span>, <span class="number">200</span>, <span class="number">150</span>, <span class="number">100</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="动画效果"><a href="#动画效果" class="headerlink" title="动画效果"></a>动画效果</h3><p>结合<code>requestAnimationFrame</code>，可以创建流畅的动画：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">animate</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 清除画布</span></span><br><span class="line">  ctx.<span class="title function_">clearRect</span>(<span class="number">0</span>, <span class="number">0</span>, canvas.<span class="property">width</span>, canvas.<span class="property">height</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 绘制移动的圆</span></span><br><span class="line">  ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">  ctx.<span class="title function_">arc</span>(x, <span class="number">100</span>, <span class="number">20</span>, <span class="number">0</span>, <span class="title class_">Math</span>.<span class="property">PI</span> * <span class="number">2</span>);</span><br><span class="line">  ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;purple&#x27;</span>;</span><br><span class="line">  ctx.<span class="title function_">fill</span>();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 更新位置</span></span><br><span class="line">  x = (x + <span class="number">2</span>) % canvas.<span class="property">width</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 请求下一帧</span></span><br><span class="line">  <span class="title function_">requestAnimationFrame</span>(animate);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">animate</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="交互功能"><a href="#交互功能" class="headerlink" title="交互功能"></a>交互功能</h3><p>Canvas可以响应用户交互：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">canvas.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> rect = canvas.<span class="title function_">getBoundingClientRect</span>();</span><br><span class="line">  <span class="keyword">const</span> x = event.<span class="property">clientX</span> - rect.<span class="property">left</span>;</span><br><span class="line">  <span class="keyword">const</span> y = event.<span class="property">clientY</span> - rect.<span class="property">top</span>;</span><br><span class="line">  </span><br><span class="line">  ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">  ctx.<span class="title function_">arc</span>(x, y, <span class="number">10</span>, <span class="number">0</span>, <span class="title class_">Math</span>.<span class="property">PI</span> * <span class="number">2</span>);</span><br><span class="line">  ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;orange&#x27;</span>;</span><br><span class="line">  ctx.<span class="title function_">fill</span>();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="本地存储技术"><a href="#本地存储技术" class="headerlink" title="本地存储技术"></a>本地存储技术</h2><p>HTML5提供了多种在客户端存储数据的方法，使Web应用能够在不依赖服务器的情况下保存用户数据和应用状态。</p>
+<h3 id="localStorage和sessionStorage"><a href="#localStorage和sessionStorage" class="headerlink" title="localStorage和sessionStorage"></a>localStorage和sessionStorage</h3><p>这两个API提供了简单的键值对存储：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 存储数据</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;username&#x27;</span>, <span class="string">&#x27;John&#x27;</span>);</span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;preferences&#x27;</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123;<span class="attr">theme</span>: <span class="string">&#x27;dark&#x27;</span>, <span class="attr">fontSize</span>: <span class="string">&#x27;large&#x27;</span>&#125;));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取数据</span></span><br><span class="line"><span class="keyword">const</span> username = <span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;username&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> preferences = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;preferences&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除数据</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">removeItem</span>(<span class="string">&#x27;username&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清除所有数据</span></span><br><span class="line"><span class="variable language_">localStorage</span>.<span class="title function_">clear</span>();</span><br></pre></td></tr></table></figure>
+
+<p><code>sessionStorage</code>的用法与<code>localStorage</code>相同，但数据只在当前会话中有效，关闭标签页后数据会被清除。</p>
+<h3 id="IndexedDB"><a href="#IndexedDB" class="headerlink" title="IndexedDB"></a>IndexedDB</h3><p>对于更复杂的数据存储需求，IndexedDB提供了一个完整的客户端数据库：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打开数据库</span></span><br><span class="line"><span class="keyword">const</span> request = indexedDB.<span class="title function_">open</span>(<span class="string">&#x27;MyDatabase&#x27;</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">request.<span class="property">onupgradeneeded</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> db = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 创建对象存储</span></span><br><span class="line">  <span class="keyword">const</span> store = db.<span class="title function_">createObjectStore</span>(<span class="string">&#x27;notes&#x27;</span>, &#123; <span class="attr">keyPath</span>: <span class="string">&#x27;id&#x27;</span>, <span class="attr">autoIncrement</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">  store.<span class="title function_">createIndex</span>(<span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;title&#x27;</span>, &#123; <span class="attr">unique</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">  store.<span class="title function_">createIndex</span>(<span class="string">&#x27;date&#x27;</span>, <span class="string">&#x27;date&#x27;</span>, &#123; <span class="attr">unique</span>: <span class="literal">false</span> &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">request.<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params">event</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> db = event.<span class="property">target</span>.<span class="property">result</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 添加数据</span></span><br><span class="line">  <span class="keyword">const</span> transaction = db.<span class="title function_">transaction</span>([<span class="string">&#x27;notes&#x27;</span>], <span class="string">&#x27;readwrite&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> store = transaction.<span class="title function_">objectStore</span>(<span class="string">&#x27;notes&#x27;</span>);</span><br><span class="line">  </span><br><span class="line">  store.<span class="title function_">add</span>(&#123;</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&#x27;购物清单&#x27;</span>,</span><br><span class="line">    <span class="attr">content</span>: <span class="string">&#x27;牛奶, 面包, 鸡蛋&#x27;</span>,</span><br><span class="line">    <span class="attr">date</span>: <span class="keyword">new</span> <span class="title class_">Date</span>()</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 读取数据</span></span><br><span class="line">  <span class="keyword">const</span> getRequest = store.<span class="title function_">get</span>(<span class="number">1</span>);</span><br><span class="line">  getRequest.<span class="property">onsuccess</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(getRequest.<span class="property">result</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="应用缓存和Service-Workers"><a href="#应用缓存和Service-Workers" class="headerlink" title="应用缓存和Service Workers"></a>应用缓存和Service Workers</h3><p>HTML5引入了应用缓存（现已被弃用）和Service Workers，使Web应用能够在离线状态下运行：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册Service Worker</span></span><br><span class="line"><span class="keyword">if</span> (<span class="string">&#x27;serviceWorker&#x27;</span> <span class="keyword">in</span> navigator) &#123;</span><br><span class="line">  navigator.<span class="property">serviceWorker</span>.<span class="title function_">register</span>(<span class="string">&#x27;/sw.js&#x27;</span>)</span><br><span class="line">    .<span class="title function_">then</span>(<span class="function"><span class="params">registration</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Service Worker 注册成功:&#x27;</span>, registration);</span><br><span class="line">    &#125;)</span><br><span class="line">    .<span class="title function_">catch</span>(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Service Worker 注册失败:&#x27;</span>, error);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>sw.js</code>文件中：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 安装Service Worker</span></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;install&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">waitUntil</span>(</span><br><span class="line">    caches.<span class="title function_">open</span>(<span class="string">&#x27;v1&#x27;</span>).<span class="title function_">then</span>(<span class="function"><span class="params">cache</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> cache.<span class="title function_">addAll</span>([</span><br><span class="line">        <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;/index.html&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;/styles.css&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;/script.js&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;/images/logo.png&#x27;</span></span><br><span class="line">      ]);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从缓存提供资源</span></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;fetch&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">respondWith</span>(</span><br><span class="line">    caches.<span class="title function_">match</span>(event.<span class="property">request</span>).<span class="title function_">then</span>(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> response || <span class="title function_">fetch</span>(event.<span class="property">request</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="实际应用：绘图应用与自动保存"><a href="#实际应用：绘图应用与自动保存" class="headerlink" title="实际应用：绘图应用与自动保存"></a>实际应用：绘图应用与自动保存</h2><p>结合Canvas和本地存储，我们可以创建一个简单的绘图应用，自动保存用户的作品：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> canvas = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;drawingCanvas&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> ctx = canvas.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> isDrawing = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">let</span> lastX = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> lastY = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置绘图样式</span></span><br><span class="line">ctx.<span class="property">lineWidth</span> = <span class="number">5</span>;</span><br><span class="line">ctx.<span class="property">lineCap</span> = <span class="string">&#x27;round&#x27;</span>;</span><br><span class="line">ctx.<span class="property">lineJoin</span> = <span class="string">&#x27;round&#x27;</span>;</span><br><span class="line">ctx.<span class="property">strokeStyle</span> = <span class="string">&#x27;#000&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 绘图功能</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">draw</span>(<span class="params">e</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!isDrawing) <span class="keyword">return</span>;</span><br><span class="line">  </span><br><span class="line">  ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">  ctx.<span class="title function_">moveTo</span>(lastX, lastY);</span><br><span class="line">  ctx.<span class="title function_">lineTo</span>(e.<span class="property">offsetX</span>, e.<span class="property">offsetY</span>);</span><br><span class="line">  ctx.<span class="title function_">stroke</span>();</span><br><span class="line">  </span><br><span class="line">  [lastX, lastY] = [e.<span class="property">offsetX</span>, e.<span class="property">offsetY</span>];</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 自动保存</span></span><br><span class="line">  <span class="title function_">saveDrawing</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">canvas.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousedown&#x27;</span>, <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">  isDrawing = <span class="literal">true</span>;</span><br><span class="line">  [lastX, lastY] = [e.<span class="property">offsetX</span>, e.<span class="property">offsetY</span>];</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">canvas.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mousemove&#x27;</span>, draw);</span><br><span class="line">canvas.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mouseup&#x27;</span>, <span class="function">() =&gt;</span> isDrawing = <span class="literal">false</span>);</span><br><span class="line">canvas.<span class="title function_">addEventListener</span>(<span class="string">&#x27;mouseout&#x27;</span>, <span class="function">() =&gt;</span> isDrawing = <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 保存绘图到localStorage</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">saveDrawing</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">localStorage</span>.<span class="title function_">setItem</span>(<span class="string">&#x27;savedDrawing&#x27;</span>, canvas.<span class="title function_">toDataURL</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 加载保存的绘图</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">loadDrawing</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> savedDrawing = <span class="variable language_">localStorage</span>.<span class="title function_">getItem</span>(<span class="string">&#x27;savedDrawing&#x27;</span>);</span><br><span class="line">  <span class="keyword">if</span> (savedDrawing) &#123;</span><br><span class="line">    <span class="keyword">const</span> img = <span class="keyword">new</span> <span class="title class_">Image</span>();</span><br><span class="line">    img.<span class="property">src</span> = savedDrawing;</span><br><span class="line">    img.<span class="property">onload</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      ctx.<span class="title function_">drawImage</span>(img, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 页面加载时恢复绘图</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="property">onload</span> = loadDrawing;</span><br></pre></td></tr></table></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>HTML5的Canvas和本地存储功能为Web开发者提供了强大的工具，使Web应用能够提供更丰富的用户体验。Canvas使得复杂的图形和动画成为可能，而本地存储技术则使Web应用能够像原生应用一样保存数据和状态。</p>
+<p>随着这些技术的不断发展和浏览器支持的改进，Web应用的功能和性能将继续接近甚至超越传统的原生应用。在下一篇文章中，我们将探讨HTML5的其他高级特性，如WebGL、WebRTC和Web Workers。</p>
+
+                    </div>
+                    <div id="load-more-container" class="text-center mt-8 mb-6">
+                        <button id="load-more-button" class="px-6 py-2 rounded-lg transition-all duration-300 ease-in-out font-medium" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color);">
+                            
+                            <span id="load-more-text">阅读更多</span>
+                            <i class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                    </div>
+                
+            </div>
+        </article>
+    </div>
+</div>
+
+<style>
+/* 添加一点过渡效果 */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    scroll-margin-top: calc(var(--nav-height) + 1rem);
+    transition: color 0.3s ease;
+}
+
+/* 优化文章内容宽度 */
+.prose {
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+/* 针对不同屏幕尺寸优化阅读体验 */
+@media (max-width: 768px) {
+    .prose {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}
+
+/* 优化图片显示 */
+.prose img {
+    margin: 1.5rem auto;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Load More Button Styles */
+#load-more-button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    background-color: transparent !important;
+}
+
+#load-more-button:hover {
+    transform: translateY(-2px);
+    border-color: var(--highlight-color) !important;
+    color: var(--highlight-color) !important;
+}
+
+#load-more-button:active {
+    transform: translateY(0);
+}
+
+#load-more-button::before {
+    display: none; /* 移除之前的背景效果 */
+}
+
+#load-more-button:hover i {
+    color: var(--highlight-color);
+}
+
+#article-preview {
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#article-preview.truncated {
+    position: relative;
+    overflow: hidden;
+}
+
+#article-preview.truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to bottom, 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0), 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0.8) 70%, 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0.95) 90%);
+    pointer-events: none;
+}
+
+/* 添加深色模式下的渐变效果 */
+[data-theme="dark"] #article-preview.truncated::after {
+    background: linear-gradient(to bottom, 
+                              rgba(15, 23, 42, 0), 
+                              rgba(15, 23, 42, 0.8) 70%, 
+                              rgba(15, 23, 42, 0.95) 90%);
+}
+
+#load-more-container {
+    position: relative;
+    z-index: 5;
+    margin-top: -50px;
+    padding-top: 70px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get background color and convert to RGB for gradient
+    const computeRGBFromCardBgColor = () => {
+        // 检查当前主题
+        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+        
+        // 根据主题使用不同的背景色
+        const cardBgColor = isDarkTheme ? 
+            '#0f172a' : // 深色模式背景色
+            (getComputedStyle(document.documentElement).getPropertyValue('--bg-color') || '#ffffff'); // 浅色模式背景色
+        
+        // Function to convert hex/rgb color to rgb values
+        const getRGBValues = (color) => {
+            // Create a temporary element
+            const temp = document.createElement('div');
+            temp.style.color = color;
+            temp.style.display = 'none';
+            document.body.appendChild(temp);
+            
+            // Get computed color
+            const computedColor = getComputedStyle(temp).color;
+            document.body.removeChild(temp);
+            
+            // Extract RGB values
+            const match = computedColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+            if (match) {
+                return `${match[1]}, ${match[2]}, ${match[3]}`;
+            }
+            
+            return isDarkTheme ? '15, 23, 42' : '255, 255, 255'; // 根据主题提供默认值
+        };
+        
+        // Set the RGB values as a CSS variable
+        const rgbValues = getRGBValues(cardBgColor);
+        document.documentElement.style.setProperty('--card-bg-rgb', rgbValues);
+    };
+    
+    // Compute RGB values
+    computeRGBFromCardBgColor();
+    
+    // 监听主题变化事件
+    document.addEventListener('themeChanged', function(event) {
+        // 重新计算背景颜色
+        computeRGBFromCardBgColor();
+    });
+    
+    const articlePreview = document.getElementById('article-preview');
+    const loadMoreButton = document.getElementById('load-more-button');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const loadMoreText = document.getElementById('load-more-text');
+    
+    if (articlePreview && loadMoreButton) {
+        const truncationPoint = document.getElementById('article-truncation-point');
+        
+        if (truncationPoint) {
+            // Get the position of the truncation point, with safety margin
+            const truncationPos = truncationPoint.offsetTop + 50;
+            
+            // Store original article height for animation
+            const fullHeight = articlePreview.scrollHeight;
+            
+            // Initially set the article as truncated with transition
+            articlePreview.style.transition = 'max-height 0.5s ease-in-out';
+            articlePreview.classList.add('truncated');
+            
+            // Set timeout to ensure transition works properly
+            setTimeout(() => {
+                articlePreview.style.maxHeight = truncationPos + 'px';
+            }, 10);
+            
+            // Check if content is primarily Chinese
+            const isChineseContent = (function() {
+                const content = articlePreview.textContent || '';
+                const sampleText = content.substring(0, 2000);
+                const chineseCount = (sampleText.match(/[\u4e00-\u9fa5]/g) || []).length;
+                return chineseCount > 150;
+            })();
+            
+            // Set button text based on language
+            const moreText = isChineseContent ? '阅读更多' : 'Load more';
+            const lessText = isChineseContent ? '收起内容' : 'Show less';
+            
+            // Handle load more button click
+            loadMoreButton.addEventListener('click', function() {
+                if (articlePreview.classList.contains('truncated')) {
+                    // Expand article
+                    articlePreview.classList.remove('truncated');
+                    articlePreview.style.maxHeight = fullHeight + 'px';
+                    
+                    // After animation completes, set to 'none' to handle any dynamic content changes
+                    setTimeout(() => {
+                        articlePreview.style.maxHeight = 'none';
+                    }, 500);
+                    
+                    // Update button
+                    loadMoreText.textContent = lessText;
+                    loadMoreButton.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    // Collapse article - first set a fixed height for animation
+                    articlePreview.style.maxHeight = articlePreview.scrollHeight + 'px';
+                    
+                    // Force reflow to ensure the browser registers the maxHeight change
+                    void articlePreview.offsetWidth;
+                    
+                    // Then add the truncated class and reduce height
+                    articlePreview.classList.add('truncated');
+                    articlePreview.style.maxHeight = truncationPos + 'px';
+                    
+                    // Update button
+                    loadMoreText.textContent = moreText;
+                    loadMoreButton.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    
+                    // Scroll back to the top of the article
+                    window.scrollTo({
+                        top: articlePreview.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (articlePreview.classList.contains('truncated')) {
+                    // Update max height based on current truncation point position
+                    articlePreview.style.maxHeight = truncationPoint.offsetTop + 50 + 'px';
+                }
+            });
+        } else {
+            // No truncation point found - hide the button
+            loadMoreContainer.style.display = 'none';
+        }
+    }
+});
+</script> 
+    </div>
+
+    <!-- 页脚 - 添加底部padding以避免内容被导航栏遮挡 -->
+    <footer class="py-6 pb-20 border-t mt-8" style="border-color: var(--border-color);">
+        <div class="container mx-auto px-4 flex flex-col items-center">
+            <p class="text-center text-sm text-secondary mb-1">
+                &copy; 2025 Rick's Blog. Powered by Hexo&Rick
+            </p>
+        </div>
+    </footer>
+
+    <!-- 主題切換通知容器 - 預先創建 -->
+    <div id="theme-notification" class="fixed opacity-0 transition-opacity duration-300" style="bottom: 100px; right: 20px; padding: 8px 16px; border-radius: 4px; z-index: 9999; font-size: 14px; display: none;"></div>
+    
+    <!-- Custom JS -->
+    <script src="/js/script.js" defer></script>
+    <script src="/js/post-cards.js"></script>
+    <script>
+        // 主题切换相关代码
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // 显示特殊闪电效果（主题切换专用）
+            const lightningContainer = document.getElementById('lightning-container');
+            
+            // 创建临时闪电效果
+            const tempLightning = document.createElement('div');
+            tempLightning.className = 'fixed inset-0 pointer-events-none z-[9998]';
+            tempLightning.style.opacity = '1';
+            tempLightning.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
+                    <path class="lightning-path" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
+                    <path class="lightning-path" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
+                    <path class="lightning-path" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
+                </svg>
+            `;
+            document.body.appendChild(tempLightning);
+            
+            // 临时隐藏常规闪电效果
+            if (lightningContainer) {
+                lightningContainer.style.opacity = '0';
+            }
+            
+            // 延迟切换主题，让闪电效果先显示
+            setTimeout(() => {
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                // 更新主题图标
+                const themeIcons = document.querySelectorAll('.theme-toggle i');
+                themeIcons.forEach(icon => {
+                    if (newTheme === 'dark') {
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                    } else {
+                        icon.classList.remove('fa-sun');
+                        icon.classList.add('fa-moon');
+                    }
+                });
+                
+                // 显示主题切换通知
+                showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
+                
+                // 触发自定义事件，通知其他脚本主题已更改
+                const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
+                document.dispatchEvent(themeChangeEvent);
+                
+                // 隐藏临时闪电效果并恢复常规闪电效果
+                setTimeout(() => {
+                    if (tempLightning.parentNode) {
+                        tempLightning.parentNode.removeChild(tempLightning);
+                    }
+                    if (lightningContainer) {
+                        lightningContainer.style.opacity = '1';
+                    }
+                }, 2000);
+            }, 100);
+        }
+
+        // 通知系统
+        function showNotification(message, duration = 2000) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full text-sm z-[9999] transition-all duration-300';
+            notification.style.backgroundColor = 'var(--bg-card)';
+            notification.style.color = 'var(--text-color)';
+            notification.style.border = '1px solid var(--border-color)';
+            notification.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+            notification.innerText = message;
+            
+            document.body.appendChild(notification);
+            
+            // 确保元素已添加到DOM后再添加opacity过渡效果
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, duration);
+        }
+
+        // 初始化主题
+        function initTheme() {
+            let theme = localStorage.getItem('theme');
+            
+            if (!theme) {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const currentHour = new Date().getHours();
+                const isNight = currentHour < 6 || currentHour >= 18;
+                
+                theme = prefersDark || isNight ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+            }
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // 更新主题图标
+            const themeIcons = document.querySelectorAll('.theme-toggle i');
+            themeIcons.forEach(icon => {
+                if (theme === 'dark') {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+        }
+
+        // 初始化主题
+        initTheme();
+
+        // 移除底部导航栏的显示/隐藏逻辑，使其始终可见
+        const bottomNav = document.getElementById('bottom-nav');
+        bottomNav.style.transform = 'translateY(0)'; // 确保导航栏始终可见
+        
+        // 返回顶部按钮功能
+        document.getElementById('back-to-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 微信号复制功能
+        document.getElementById('copy-wechat').addEventListener('click', function() {
+            const wechatId = "378778778";
+            navigator.clipboard.writeText(wechatId).then(function() {
+                showNotification('微信号已复制: ' + wechatId);
+            }).catch(function(err) {
+                console.error('复制微信号失败: ', err);
+                // 兼容性处理
+                const textarea = document.createElement('textarea');
+                textarea.value = wechatId;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification('微信号已复制: ' + wechatId);
+            });
+        });
+    </script>
+    
+    <!-- Logo切换脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Since we're now using text instead of logo images, 
+            // this script is no longer needed but we'll keep it 
+            // to avoid breaking any references to it elsewhere
+        });
+    </script>
+</body>
+</html> 
