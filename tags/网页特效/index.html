@@ -288,8 +288,7 @@
 
     <!-- 主内容区域 -->
     <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
-        
-<link rel="preload" href="/mactowin/styles.css" as="style">
+        <link rel="preload" href="/mactowin/styles.css" as="style">
 
 <!-- 載入樣式 -->
 <link rel="stylesheet" href="/mactowin/styles.css">
@@ -305,7 +304,7 @@ main.flex-grow.container {
 }
 
 .header {
-    text-align: center;
+    text-align: left;
     padding: 24px 16px;
     max-width: 800px;
     margin: 0 auto;
@@ -317,6 +316,7 @@ main.flex-grow.container {
     margin-bottom: 12px;
     color: var(--text-color);
     font-weight: 600;
+    text-align: left;
 }
 
 .header p {
@@ -324,7 +324,8 @@ main.flex-grow.container {
     color: var(--text-muted);
     line-height: 1.4;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0;
+    text-align: left;
 }
 
 /* 確保導航欄文字在淺色模式下的可讀性 */
@@ -364,369 +365,393 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     }
 }
 
-/* 設置較大的卡片跨兩列 */
-.card-wide {
-    grid-column: span 1;
-}
-
-@media (min-width: 640px) {
-    .card-wide {
-        grid-column: span 2 !important;
-    }
-}
-
-/* 添加col-span-2類以支持與mactowin頁面相同的樣式 */
-.col-span-2 {
-    grid-column: span 1;
-}
-
-@media (min-width: 640px) {
-    .col-span-2 {
-        grid-column: span 2;
-    }
-}
-
-/* 根據圖片調整卡片樣式 */
-.card {
+/* 卡片边框渐变样式 */
+.card-gradient-border {
+    border: none !important;
     position: relative;
-    height: 100%;
+    z-index: 1;
+}
+
+.card-gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: 0.75rem; /* rounded-xl */
+    background: linear-gradient(270deg, 
+        rgba(30, 41, 82, 0.05) 0%, 
+        rgba(30, 41, 82, 0.08) 30%, 
+        rgba(185, 30, 71, 0.1) 100%);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+/* 深色模式下增加边框可见度 */
+[data-theme="dark"] .card-gradient-border::before {
+    padding: 1.5px; /* 增加边框宽度 */
+    background: linear-gradient(270deg, 
+        rgba(100, 140, 255, 0.25) 0%, 
+        rgba(120, 160, 255, 0.3) 30%, 
+        rgba(255, 100, 150, 0.35) 100%);
+    box-shadow: 0 0 6px rgba(120, 160, 255, 0.15); /* 减弱发光效果 */
+}
+
+/* 卡片悬停效果 */
+.card {
     transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    border-radius: 16px;
-    overflow: hidden;
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    min-height: 180px;
 }
 
 .card:hover {
-    box-shadow: 0 10px 25px -5px var(--hover-shadow) !important;
-    transform: translateY(-2px) !important;
+    transform: translateY(-5px) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
 }
 
-.card:hover .card-pattern,
-.card:hover .card-border {
-    opacity: 1 !important;
+[data-theme="dark"] .card:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 添加持久悬停卡片的样式 */
-.card.persistent-hover {
-    box-shadow: none !important;
-    transform: translateY(0) !important;
-}
-
-.card.persistent-hover .card-pattern,
-.card.persistent-hover .card-border {
-    opacity: 0 !important;
-}
-
-.card-header {
-    position: relative;
-    padding: 16px 16px 8px 16px;
-}
-
-.card-header-content {
-    display: flex;
+/* 技术栈标签样式 */
+.tech-tag {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-}
-
-.icon-wrapper {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--icon-bg);
-}
-
-.status-badge {
-    font-size: 12px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 16px;
+    font-size: 0.65rem;
     font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background-color: var(--card-tag-bg);
-    color: var(--text-muted);
-}
-
-.card-content {
+    letter-spacing: 0.02em;
+    transition: all 0.3s ease;
     position: relative;
-    padding: 0 16px 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 80px;
+    background-color: transparent;
+    margin: 0.2rem;
+    z-index: 1;
+    overflow: hidden;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transform: translateY(0);
 }
 
-.card-title {
-    font-size: 18px;
-    font-weight: 600;
+/* 主色调技术标签 */
+.tech-tag-primary {
+    color: #1e2952;
+    border-color: rgba(30, 41, 82, 0.3);
+}
+
+/* 辅助色调技术标签 */
+.tech-tag-accent {
+    color: #b91e47;
+    border-color: rgba(185, 30, 71, 0.3);
+}
+
+/* 技术标签悬停效果 */
+.tech-tag::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.1;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%);
+}
+
+.tech-tag-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(135deg, rgba(var(--highlight-color-rgb), 0.1), transparent);
+    opacity: 0.2;
+}
+
+.tech-tag-accent::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(135deg, rgba(185, 30, 71, 0.1), transparent);
+    opacity: 0.2;
+}
+
+.tech-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+
+.tech-tag:hover::before {
+    transform: translateX(100%);
+    opacity: 0.3;
+}
+
+/* 技术标签图标 */
+.tech-tag i {
+    margin-right: 0.25rem;
+    font-size: 0.65rem;
+    transition: transform 0.3s ease;
+}
+
+.tech-tag:hover i {
+    transform: scale(1.15);
+}
+
+/* 深色模式下的技术标签调整 */
+[data-theme="dark"] .tech-tag {
+    border-width: 1px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .tech-tag-primary {
+    border-color: rgba(100, 140, 255, 0.3);
+    color: rgba(180, 200, 255, 0.95);
+}
+
+[data-theme="dark"] .tech-tag-accent {
+    border-color: rgba(255, 100, 150, 0.3);
+    color: rgba(255, 150, 180, 0.95);
+}
+
+[data-theme="dark"] .tech-tag-primary::after {
+    background: linear-gradient(135deg, rgba(100, 140, 255, 0.15), transparent);
+}
+
+[data-theme="dark"] .tech-tag-accent::after {
+    background: linear-gradient(135deg, rgba(255, 100, 150, 0.15), transparent);
+}
+
+[data-theme="dark"] .tech-tag:hover {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
+
+/* 重新设计的标题区域样式 */
+.archive-header {
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto 30px;
+    border-bottom: 1px solid rgba(var(--highlight-color-rgb), 0.1);
+    position: relative;
+}
+
+.archive-header h1 {
+    font-size: 36px;
+    margin-bottom: 16px;
     color: var(--text-color);
-    line-height: 1.4;
-    margin-bottom: 0;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-.card-meta {
-    margin-left: 8px;
-    font-size: 13px;
-    color: var(--text-light);
-    font-weight: 400;
-}
-
-.card-description {
-    font-size: 14px;
+.archive-header p {
+    font-size: 16px;
     color: var(--text-muted);
     line-height: 1.5;
-    font-weight: 400;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.card-footer {
-    position: relative;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    border-top: none;
+.archive-count {
+    display: inline-block;
+    padding: 3px 10px;
+    background-color: rgba(var(--highlight-color-rgb), 0.1);
+    color: var(--highlight-color);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 5px;
 }
 
-.card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+[data-theme="dark"] .archive-count {
+    background-color: rgba(var(--highlight-color-rgb), 0.2);
 }
 
-.card-tag {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background-color: var(--card-tag-bg);
-    color: var(--text-light);
-}
-
-/* 卡片底部圖案 */
-.card-pattern {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-    background-image: radial-gradient(circle at center, rgba(0,0,0,0.025) 1px, transparent 1px);
-    background-size: 8px 8px;
-    z-index: 0;
-}
-
-.card:hover .card-pattern {
-    opacity: 1;
-}
-
-/* 卡片底部邊框 */
-.card-border {
-    position: absolute;
-    inset: 0;
-    z-index: -10;
-    border-radius: 16px;
-    padding: 1px;
-    background: linear-gradient(to bottom right, transparent, var(--via-color), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.card:hover .card-border {
-    opacity: 1;
-}
-
-/* 年份標題樣式 */
-.year-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    grid-column: 1 / -1;
-}
-
-/* 不同文章卡片的图标颜色 */
-.card[data-index="0"] .icon-wrapper i { color: #3b82f6; }
-.card[data-index="1"] .icon-wrapper i { color: #10b981; }
-.card[data-index="2"] .icon-wrapper i { color: #f59e0b; }
-.card[data-index="3"] .icon-wrapper i { color: #ef4444; }
-.card[data-index="4"] .icon-wrapper i { color: #8b5cf6; }
-.card[data-index="5"] .icon-wrapper i { color: #ec4899; }
-.card[data-index="6"] .icon-wrapper i { color: #14b8a6; }
-
-/* 新的分页控制器样式，与首页一致 */
+/* 翻页按钮样式 */
 .pagination-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
-    background-color: transparent;
+    margin: 40px 0 20px;
 }
 
-:root[data-theme="dark"] .pagination-container {
-    background-color: transparent !important;
-}
-
-.pagination-pill {
+.pagination {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    background: rgba(var(--highlight-color-rgb), 0.05);
+    backdrop-filter: blur(10px);
+    padding: 10px 16px;
+    border-radius: 50px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    border: 1px solid rgba(var(--highlight-color-rgb), 0.2);
 }
 
-:root[data-theme="dark"] .pagination-pill {
-    background-color: rgba(30, 30, 30, 0.7) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-}
-
-.pagination-icon {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 9999px;
-    display: flex;
+.page-btn {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-color);
-    transition: all 0.3s ease;
-}
-
-:root[data-theme="dark"] .pagination-icon {
-    color: white !important;
-}
-
-.pagination-icon:hover {
-    background-color: var(--highlight-color);
-    color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.pagination-text {
-    font-size: 0.875rem;
+    margin: 0 3px;
     font-weight: 500;
-    color: var(--text-color);
-}
-
-:root[data-theme="dark"] .pagination-text {
-    color: white !important;
-}
-
-.pagination-page {
-    font-weight: 700;
-}
-
-.pagination-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* 卡片角标样式 - 移动到右下角 */
-.card-badge {
-    position: absolute !important;
-    top: auto !important;
-    left: auto !important;
-    bottom: 15px !important;
-    right: 15px !important;
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    z-index: 30 !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-}
-
-.card:hover .card-badge {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-}
-
-/* 确保图标正确显示 */
-.card-badge i {
     font-size: 15px;
-    color: white;
+    transition: all 0.25s cubic-bezier(0.3, 0.1, 0.3, 1);
+    position: relative;
+    color: var(--text-color);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.page-btn:hover {
+    background: rgba(var(--highlight-color-rgb), 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(var(--highlight-color-rgb), 0.1);
+}
+
+.page-btn.active {
+    background: var(--highlight-color);
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(var(--highlight-color-rgb), 0.25);
+}
+
+.page-btn.nav {
+    font-size: 18px;
+    color: var(--highlight-color);
+    margin: 0 5px;
+}
+
+.page-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.page-btn .dot {
+    width: 4px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 1px;
+}
+
+[data-theme="dark"] .pagination {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border-color: rgba(var(--highlight-color-rgb), 0.25);
+    background: rgba(var(--highlight-color-rgb), 0.12);
 }
 </style>
 
-<div class="header">
-    <h1>Archives</h1>
-    <p>Total 9 posts, browse all articles by year.</p>
+<div class="archive-header">
+    <h1>My Archive Collection</h1>
+    <p>Explore <span class="archive-count">9 articles</span> organized chronologically</p>
 </div>
 
 
 
-<div class="bento-grid">
-    
-        <h2 class="year-title">2024</h2>
-        
-        
-            <a href="/2024/05/26/JavaScript%E4%BA%92%E5%8A%A8%E7%89%B9%E6%95%88%EF%BC%9A%E6%8F%90%E5%8D%87%E7%BD%91%E9%A1%B5%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E7%9A%8410%E4%B8%AA%E6%8A%80%E5%B7%A7/" class="card-link col-span-2 card-wide">
-                <div class="card" data-index="0">
-                    <div class="card-pattern"></div>
-                    
-                    <div class="card-content">
-                        <h3 class="card-title">
-                            JavaScript互动特效：提升网页用户体验的10个技巧
-                        </h3>
-                    </div>
-                    
-                    <div class="card-footer">
-                        <div class="card-tags">
-                            
+<!-- 主要内容区域 -->
+<section class="w-full max-w-6xl mx-auto my-2 rounded-xl transition-all duration-300 overflow-hidden card" style="border: none; background-color: transparent; box-shadow: none !important;">
+    <div class="px-4 md:px-6 py-4 md:py-6">
+        <!-- 功能卡片区域 -->
+        <div id="articleCards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-3">
+            
+                <a href="/2024/05/26/JavaScript%E4%BA%92%E5%8A%A8%E7%89%B9%E6%95%88%EF%BC%9A%E6%8F%90%E5%8D%87%E7%BD%91%E9%A1%B5%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E7%9A%8410%E4%B8%AA%E6%8A%80%E5%B7%A7/" class="rounded-xl shadow-sm card-gradient-border overflow-hidden" style="background: transparent;">
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-laptop text-white text-sm"></i>
+                            </div>
+                            <h3 class="text-base font-semibold text-primary">JavaScript互动特效：提升网页用户体验的10个技巧</h3>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex flex-wrap gap-1.5 mb-3">
                                 
-                                    <span class="card-tag">#前端开发</span>
+                                    <span class="tech-tag tech-tag-primary">
+                                        <i class="fab fa-html5"></i>前端开发
+                                    </span>
                                 
-                                    <span class="card-tag">#JavaScript</span>
+                                    <span class="tech-tag tech-tag-accent">
+                                        <i class="fab fa-css3-alt"></i>JavaScript
+                                    </span>
                                 
-                            
+                                    <span class="tech-tag tech-tag-primary">
+                                        <i class="fab fa-js"></i>用户体验
+                                    </span>
+                                
+                                    <span class="tech-tag tech-tag-accent">
+                                        <i class="fab fa-code"></i>网页特效
+                                    </span>
+                                
+                            </div>
+                            <div class="space-y-2">
+                                
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        <span class="text-xs text-secondary">1. 平滑滚动效果</span>
+                                    </div>
+                                
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        <span class="text-xs text-secondary">2. 图片懒加载</span>
+                                    </div>
+                                
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        <span class="text-xs text-secondary">3. 动态表单验证</span>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                        <div class="mt-auto">
+                            <p class="text-xs text-tertiary text-right">May 2024</p>
                         </div>
                     </div>
-                    
-                    <div class="card-badge" data-color="#64748b">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    
-                    <div class="card-border"></div>
-                </div>
-            </a>
+                </a>
+            
+        </div>
         
-    
-</div>
+        <!-- 全新的分页导航 -->
+        <div class="pagination-container">
+            <div class="pagination">
+                <!-- 上一页按钮 -->
+                
+                    <span class="page-btn nav disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+                
 
+                
+                        <span class="page-btn active">1</span>
+                        
 
-
-
+                <!-- 下一页按钮 -->
+                
+                    <span class="page-btn nav disabled">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                
+            </div>
+        </div>
+        
+    </div>
+</section>
 
 <script>
-// 確保頁面完全載入後執行
+// 确保页面完全载入后执行
 document.addEventListener('DOMContentLoaded', function() {
     // Brief timeout to ensure everything is loaded
     setTimeout(function() {
-        // 確保導航欄文字顏色正確
+        // 确保导航栏文字颜色正确
         const navElement = document.querySelector('nav');
         if (navElement && !navElement.classList.contains('nav-bg')) {
             navElement.classList.add('nav-bg');
         }
         
-        // 確保主容器樣式正確
+        // 确保主容器样式正确
         const mainContainer = document.querySelector('main.flex-grow.container');
         if (mainContainer) {
             mainContainer.style.paddingTop = '0';
@@ -734,43 +759,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mainContainer.style.paddingLeft = '0';
             mainContainer.style.paddingRight = '0';
         }
-        
-        // 確保寬卡片在小螢幕上也能正確顯示
-        function adjustCardLayout() {
-            const wideCards = document.querySelectorAll('.card-wide, .col-span-2');
-            const isMobile = window.innerWidth < 640;
-            
-            wideCards.forEach(card => {
-                if (isMobile) {
-                    card.style.gridColumn = 'span 1';
-                } else {
-                    card.style.gridColumn = 'span 2';
-                }
-            });
-        }
-        
-        // 设置卡片角标的背景颜色
-        const cardBadges = document.querySelectorAll('.card-badge');
-        cardBadges.forEach(badge => {
-            const color = badge.getAttribute('data-color');
-            if (color) {
-                badge.style.backgroundColor = color;
-                console.log('Set badge color to:', color); // Debug logging
-            }
-        });
-        
-        // Force repositioning of badges
-        cardBadges.forEach(badge => {
-            badge.style.position = 'absolute';
-            badge.style.top = 'auto';
-            badge.style.left = 'auto';
-            badge.style.bottom = '15px';
-            badge.style.right = '15px';
-        });
-        
-        // 初始調整和視窗大小變化時調整
-        adjustCardLayout();
-        window.addEventListener('resize', adjustCardLayout);
     }, 300);
 });
 </script> 
