@@ -636,24 +636,32 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     cursor: not-allowed;
 }
 
-/* 卡片左上角角标样式 */
+/* 卡片角标样式 - 移动到右下角 */
 .card-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 19px;  /* 原来32px的60% */
-    height: 19px; /* 原来32px的60% */
-    border-radius: 6px; /* 适当缩小圆角 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    bottom: 15px !important;
+    right: 15px !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 30 !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.card:hover .card-badge {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 /* 确保图标正确显示 */
 .card-badge i {
-    font-size: 10px; /* 原来16px的60% */
+    font-size: 15px;
     color: white;
 }
 </style>
@@ -674,25 +682,9 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                 <div class="card" data-index="0">
                     <div class="card-pattern"></div>
                     
-                    <div class="card-badge" data-color="#06b6d4">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    
-                    <div class="card-header">
-                        <div class="card-header-content">
-                            <div class="icon-wrapper" style="display: none;">
-                                <i class='fas fa-rocket' style="font-size: 16px;"></i>
-                            </div>
-                            <span class="status-badge" style="margin-left: auto;">5月 2025</span>
-                        </div>
-                    </div>
-                    
                     <div class="card-content">
                         <h3 class="card-title">
                             HTML5高级特性：Canvas绘图与本地存储
-                            
-                                <span class="card-meta">探索HTML5的强大功能，打造更丰富的Web应用体验</span>
-                            
                         </h3>
                     </div>
                     
@@ -706,6 +698,10 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 
                             
                         </div>
+                    </div>
+                    
+                    <div class="card-badge" data-color="#06b6d4">
+                        <i class="fas fa-rocket"></i>
                     </div>
                     
                     <div class="card-border"></div>
@@ -722,47 +718,60 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
 <script>
 // 確保頁面完全載入後執行
 document.addEventListener('DOMContentLoaded', function() {
-    // 確保導航欄文字顏色正確
-    const navElement = document.querySelector('nav');
-    if (navElement && !navElement.classList.contains('nav-bg')) {
-        navElement.classList.add('nav-bg');
-    }
-    
-    // 確保主容器樣式正確
-    const mainContainer = document.querySelector('main.flex-grow.container');
-    if (mainContainer) {
-        mainContainer.style.paddingTop = '0';
-        mainContainer.style.maxWidth = '100%';
-        mainContainer.style.paddingLeft = '0';
-        mainContainer.style.paddingRight = '0';
-    }
-    
-    // 確保寬卡片在小螢幕上也能正確顯示
-    function adjustCardLayout() {
-        const wideCards = document.querySelectorAll('.card-wide, .col-span-2');
-        const isMobile = window.innerWidth < 640;
+    // Brief timeout to ensure everything is loaded
+    setTimeout(function() {
+        // 確保導航欄文字顏色正確
+        const navElement = document.querySelector('nav');
+        if (navElement && !navElement.classList.contains('nav-bg')) {
+            navElement.classList.add('nav-bg');
+        }
         
-        wideCards.forEach(card => {
-            if (isMobile) {
-                card.style.gridColumn = 'span 1';
-            } else {
-                card.style.gridColumn = 'span 2';
+        // 確保主容器樣式正確
+        const mainContainer = document.querySelector('main.flex-grow.container');
+        if (mainContainer) {
+            mainContainer.style.paddingTop = '0';
+            mainContainer.style.maxWidth = '100%';
+            mainContainer.style.paddingLeft = '0';
+            mainContainer.style.paddingRight = '0';
+        }
+        
+        // 確保寬卡片在小螢幕上也能正確顯示
+        function adjustCardLayout() {
+            const wideCards = document.querySelectorAll('.card-wide, .col-span-2');
+            const isMobile = window.innerWidth < 640;
+            
+            wideCards.forEach(card => {
+                if (isMobile) {
+                    card.style.gridColumn = 'span 1';
+                } else {
+                    card.style.gridColumn = 'span 2';
+                }
+            });
+        }
+        
+        // 设置卡片角标的背景颜色
+        const cardBadges = document.querySelectorAll('.card-badge');
+        cardBadges.forEach(badge => {
+            const color = badge.getAttribute('data-color');
+            if (color) {
+                badge.style.backgroundColor = color;
+                console.log('Set badge color to:', color); // Debug logging
             }
         });
-    }
-    
-    // 设置卡片角标的背景颜色
-    const cardBadges = document.querySelectorAll('.card-badge');
-    cardBadges.forEach(badge => {
-        const color = badge.getAttribute('data-color');
-        if (color) {
-            badge.style.backgroundColor = color;
-        }
-    });
-    
-    // 初始調整和視窗大小變化時調整
-    adjustCardLayout();
-    window.addEventListener('resize', adjustCardLayout);
+        
+        // Force repositioning of badges
+        cardBadges.forEach(badge => {
+            badge.style.position = 'absolute';
+            badge.style.top = 'auto';
+            badge.style.left = 'auto';
+            badge.style.bottom = '15px';
+            badge.style.right = '15px';
+        });
+        
+        // 初始調整和視窗大小變化時調整
+        adjustCardLayout();
+        window.addEventListener('resize', adjustCardLayout);
+    }, 300);
 });
 </script> 
     </div>
