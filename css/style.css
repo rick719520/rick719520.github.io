@@ -84,72 +84,6 @@ body {
     position: relative;
 }
 
-/* 闪电容器样式 */
-#lightning-container {
-    position: fixed;
-    top: 100px;
-    right: 10px;
-    width: 150px;
-    height: 150px;
-    pointer-events: none;
-    z-index: 100 !important;
-    opacity: 1 !important;
-    overflow: hidden;
-}
-
-.lightning-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.lightning-path {
-    stroke: rgba(100, 116, 139, 0.7);
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    opacity: 0;
-}
-
-:root[data-theme="dark"] .lightning-path {
-    stroke: rgba(255, 255, 255, 0.7);
-}
-
-/* 调整闪电路径的位置 */
-.lightning-1 {
-    animation: lightning-flash 5s linear infinite;
-    animation-delay: 1.5s;
-    transform: scale(0.5) translate(-50%, -50%);
-}
-
-.lightning-2 {
-    animation: lightning-flash 7s linear infinite;
-    animation-delay: 3s;
-    transform: scale(0.5) translate(-20%, -20%);
-}
-
-.lightning-3 {
-    animation: lightning-flash 6s linear infinite;
-    animation-delay: 5s;
-    transform: scale(0.5) translate(-30%, -30%);
-}
-
-@keyframes lightning-flash {
-    0%, 100% {
-        opacity: 0;
-        stroke-dashoffset: 1000;
-    }
-    0.5%, 0.7% {
-        opacity: 0.8;
-        stroke-dashoffset: 0;
-    }
-    1%, 99% {
-        opacity: 0;
-        stroke-dashoffset: 0;
-    }
-}
-
 main {
     padding-top: calc(var(--nav-height) + 16px) !important;
 }
@@ -718,34 +652,6 @@ figure.highlight .code pre {
         padding: 1.5rem 1rem !important;
     }
     
-    /* 闪电效果容器调整 */
-    #lightning-container {
-        top: 80px;
-        right: 10px;
-        width: 120px;
-        height: 120px;
-        z-index: 100 !important;
-        opacity: 1 !important;
-    }
-    
-    /* 加强移动设备上闪电的可见性 */
-    .lightning-path {
-        stroke-width: 4px !important;
-    }
-    
-    /* 增加移动设备上闪电动画的频率 */
-    .lightning-1 {
-        animation-duration: 4s !important;
-    }
-    
-    .lightning-2 {
-        animation-duration: 5s !important;
-    }
-    
-    .lightning-3 {
-        animation-duration: 4.5s !important;
-    }
-    
     /* 修复长内容自动换行 */
     .prose p, .prose li, .prose blockquote {
         word-wrap: break-word !important;
@@ -807,18 +713,39 @@ figure.highlight .code pre {
 
 /* 卡片样式 */
 .card {
+    position: relative;
+    border-radius: 12px;
     background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
+    border: 1px solid var(--card-border);
     box-shadow: var(--card-shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-/* 修改卡片悬停效果，但保留文章卡片的悬停效果 */
+/* 卡片左上角角标样式 */
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 确保图标正确显示 */
+.card-badge i {
+    font-size: 16px;
+    color: white;
+}
+
 .bento-grid .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    border-color: var(--highlight-color);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px var(--hover-shadow);
 }
 
 /* 首页大容器不应用悬停效果 */

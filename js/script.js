@@ -18,8 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 安全地执行各个初始化函数
     safeExecute(initFadeInAnimations);
     safeExecute(initMobileMenu);
-    safeExecute(initLightningEffect);
-    safeExecute(initPageTransitions);
     safeExecute(initTocNavigation);
 });
 
@@ -316,100 +314,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', setDocHeight);
 });
 
-// 初始化闪电效果
-function initLightningEffect() {
-    // 获取闪电容器
-    const lightningContainer = document.getElementById('lightning-container');
-    if (!lightningContainer) {
-        console.warn('闪电容器元素不存在');
-        return;
-    }
-    
-    // 确保闪电容器可见
-    lightningContainer.style.opacity = '1';
-    
-    // 闪电路径元素
-    const lightningPaths = document.querySelectorAll('.lightning-path');
-    if (lightningPaths.length === 0) {
-        console.warn('未找到闪电路径元素');
-        return;
-    }
-    
-    // 提供更明显的随机闪电效果
-    function createLightning() {
-        // 随机选择一个闪电路径
-        const randomIndex = Math.floor(Math.random() * lightningPaths.length);
-        const path = lightningPaths[randomIndex];
-        
-        // 闪电颜色 - 根据当前主题决定
-        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
-        const strokeColor = isDarkTheme ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 82, 0.9)';
-        
-        // 保存原始动画状态
-        const originalAnimation = path.style.animation;
-        
-        // 暂停常规动画并设置手动闪烁效果
-        path.style.animation = 'none';
-        path.style.stroke = strokeColor;
-        path.style.opacity = '1';
-        path.style.strokeDashoffset = '0';
-        
-        // 快速闪烁效果
-        setTimeout(() => {
-            path.style.opacity = '0.7';
-            setTimeout(() => {
-                path.style.opacity = '1';
-                setTimeout(() => {
-                    path.style.opacity = '0.5';
-                    setTimeout(() => {
-                        // 恢复常规动画
-                        path.style.animation = originalAnimation;
-                        path.style.stroke = '';
-                        path.style.opacity = '';
-                        path.style.strokeDashoffset = '';
-                    }, 80);
-                }, 50);
-            }, 60);
-        }, 70);
-    }
-    
-    // 定时调用闪电效果
-    function scheduleLightning() {
-        // 随机时间间隔 - 更频繁的闪电
-        const interval = Math.random() * 10000 + 3000; // 3-13秒间隔
-        
-        setTimeout(() => {
-            // 创建闪电效果
-            createLightning();
-            
-            // 有40%的概率快速连续闪两次
-            if (Math.random() < 0.4) {
-                setTimeout(createLightning, 200);
-                
-                // 有20%的概率连续闪三次
-                if (Math.random() < 0.2) {
-                    setTimeout(createLightning, 500);
-                }
-            }
-            
-            // 安排下一次闪电
-            scheduleLightning();
-        }, interval);
-    }
-    
-    // 启动闪电效果，并立即显示一次闪电
-    createLightning();
-    scheduleLightning();
-    
-    // 在主题变化时更新闪电颜色
-    document.addEventListener('themeChanged', function(e) {
-        // 立即显示一次闪电以庆祝主题变化
-        setTimeout(() => {
-            createLightning();
-        }, 2500);
-    });
-}
-
 // 初始化目录导航功能
 function initTocNavigation() {
     const tocLinks = document.querySelectorAll('.article-toc-link');
@@ -432,26 +336,26 @@ function initTocNavigation() {
             const decodedId = decodeURIComponent(id);
                 
             // 尝试查找目标标题元素
-                let targetHeading = document.getElementById(decodedId);
+            let targetHeading = document.getElementById(decodedId);
                 
             // 如果找不到解码后的ID，尝试使用原始ID
-                if (!targetHeading) {
+            if (!targetHeading) {
                 targetHeading = document.getElementById(id);
-                }
+            }
                 
-                if (targetHeading) {
+            if (targetHeading) {
                 // 计算滚动位置，考虑固定导航栏的高度
                 const navHeight = document.querySelector('nav').offsetHeight;
                 const targetPosition = targetHeading.getBoundingClientRect().top + window.pageYOffset - navHeight - 20;
                     
                 // 平滑滚动到目标位置
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
                     
                 // 更新URL，但不触发滚动
-                    history.pushState(null, null, href);
+                history.pushState(null, null, href);
                     
                 // 高亮当前选中的目录项
                 tocLinks.forEach(link => link.classList.remove('active'));
@@ -470,11 +374,11 @@ function initTocNavigation() {
                 const navHeight = document.querySelector('nav').offsetHeight;
                 const targetPosition = targetHeading.getBoundingClientRect().top + window.pageYOffset - navHeight - 20;
                     
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
             }, 200);
-            }
+        }
     }
 } 

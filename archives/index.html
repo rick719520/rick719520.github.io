@@ -52,12 +52,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <!-- Font Awesome via CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Boxicons via CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 禁用hover效果 -->
-    <link rel="stylesheet" href="/css/no-hover.css">
     <style>
         /* 全局盒模型规则 */
         *, *::before, *::after {
@@ -93,72 +89,6 @@
             --accent-color-rgb: 220, 38, 38; /* Rose Red */
             --icon-color: #ffffff;
             --tech-bg: rgba(255, 255, 255, 0.1);
-        }
-
-        /* 闪电效果样式 */
-        #lightning-container {
-            position: fixed;
-            top: 200px;
-            right: 30px;
-            width: 250px;
-            height: 250px;
-            pointer-events: none;
-            z-index: 100;
-            overflow: hidden;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightning-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .lightning-path {
-            stroke: rgba(100, 116, 139, 0.7);
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            opacity: 0;
-        }
-
-        :root[data-theme="dark"] .lightning-path {
-            stroke: rgba(255, 255, 255, 0.7);
-        }
-
-        /* 调整闪电路径的位置 */
-        .lightning-1 {
-            animation: lightning-flash 5s linear infinite;
-            animation-delay: 1.5s;
-            transform: scale(0.5) translate(-50%, -50%);
-        }
-
-        .lightning-2 {
-            animation: lightning-flash 7s linear infinite;
-            animation-delay: 3s;
-            transform: scale(0.5) translate(-20%, -20%);
-        }
-
-        .lightning-3 {
-            animation: lightning-flash 6s linear infinite;
-            animation-delay: 5s;
-            transform: scale(0.5) translate(-30%, -30%);
-        }
-
-        @keyframes lightning-flash {
-            0%, 100% {
-                opacity: 0;
-                stroke-dashoffset: 1000;
-            }
-            0.5%, 0.7% {
-                opacity: 0.8;
-                stroke-dashoffset: 0;
-            }
-            1%, 99% {
-                opacity: 0;
-                stroke-dashoffset: 0;
-            }
         }
 
         /* 页面过渡效果 */
@@ -334,6 +264,10 @@
             <a href="/" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
                 <i class="fas fa-home"></i>
             </a>
+            <a href="/archives" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon relative">
+                <i class="fas fa-archive"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[7px] px-0.5 py-px rounded-full font-medium leading-none">New</span>
+            </a>
             <a href="https://719520.xyz" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
                 <i class="fas fa-globe"></i>
             </a>
@@ -352,26 +286,16 @@
         </div>
     </div>
 
-    <!-- 闪电效果容器 -->
-    <div id="lightning-container" class="fixed pointer-events-none" style="opacity: 1;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
-            <path class="lightning-path lightning-1" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" />
-            <path class="lightning-path lightning-2" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" />
-            <path class="lightning-path lightning-3" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" />
-        </svg>
-    </div>
-
     <!-- 主内容区域 -->
     <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
-        <!-- 使用与首页相同的文章卡片样式 -->
-<!-- Preload critical resources -->
+        
 <link rel="preload" href="/mactowin/styles.css" as="style">
 
 <!-- 載入樣式 -->
 <link rel="stylesheet" href="/mactowin/styles.css">
 
 <style>
-/* 覆蓋某些樣式以整合到主題 */
+
 main.flex-grow.container {
     padding-top: 0 !important;
     width: 100%;
@@ -466,35 +390,42 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
 .card {
     position: relative;
     height: 100%;
-    transition: all 0.25s;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     border-radius: 16px;
     overflow: hidden;
     background-color: var(--card-bg);
     border: 1px solid var(--card-border);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    min-height: 180px;
 }
 
 .card:hover {
-    box-shadow: 0 15px 30px -5px var(--hover-shadow);
-    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px var(--hover-shadow) !important;
+    transform: translateY(-2px) !important;
+}
+
+.card:hover .card-pattern,
+.card:hover .card-border {
+    opacity: 1 !important;
 }
 
 /* 添加持久悬停卡片的样式 */
 .card.persistent-hover {
-    box-shadow: 0 10px 25px -5px var(--hover-shadow);
-    transform: translateY(-2px);
+    box-shadow: none !important;
+    transform: translateY(0) !important;
 }
 
 .card.persistent-hover .card-pattern,
 .card.persistent-hover .card-border {
-    opacity: 1;
+    opacity: 0 !important;
 }
 
 .card-header {
     position: relative;
-    padding: 16px;
+    padding: 16px 16px 8px 16px;
 }
 
 .card-header-content {
@@ -526,14 +457,18 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     position: relative;
     padding: 0 16px 16px;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px;
 }
 
 .card-title {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-color);
-    line-height: 1.3;
-    margin-bottom: 10px;
+    line-height: 1.4;
+    margin-bottom: 0;
 }
 
 .card-meta {
@@ -633,11 +568,11 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     align-items: center;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
-    background-color: var(--card-bg);
+    background-color: transparent;
 }
 
 :root[data-theme="dark"] .pagination-container {
-    background-color: #000 !important;
+    background-color: transparent !important;
 }
 
 .pagination-pill {
@@ -700,6 +635,27 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* 卡片左上角角标样式 */
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 19px;  /* 原来32px的60% */
+    height: 19px; /* 原来32px的60% */
+    border-radius: 6px; /* 适当缩小圆角 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 确保图标正确显示 */
+.card-badge i {
+    font-size: 10px; /* 原来16px的60% */
+    color: white;
+}
 </style>
 
 <div class="header">
@@ -715,15 +671,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
         
         
             <a href="/2025/05/27/HTML5%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7%EF%BC%9ACanvas%E7%BB%98%E5%9B%BE%E4%B8%8E%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8/" class="card-link col-span-2 card-wide">
-                <div class="card persistent-hover" data-index="0">
+                <div class="card" data-index="0">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#06b6d4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-newspaper' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-rocket' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2025</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2025</span>
                         </div>
                     </div>
                     
@@ -734,11 +694,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">探索HTML5的强大功能，打造更丰富的Web应用体验</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                HTML5高级特性：Canvas绘图与本地存储HTML5带来了许多革命性的新特性，使Web应用程序能够实现以前只有原生应用才能实现的功能。本文将深入探讨两个强大的HTML5功能：Canvas绘图API...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -758,15 +713,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2025/05/27/%E5%93%8D%E5%BA%94%E5%BC%8F%E7%BD%91%E9%A1%B5%E8%AE%BE%E8%AE%A1%EF%BC%9A%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E9%80%82%E9%85%8D%E5%90%84%E7%A7%8D%E8%AE%BE%E5%A4%87%E7%9A%84%E7%BD%91%E7%AB%99/" class="card-link ">
-                <div class="card " data-index="1">
+                <div class="card" data-index="1">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#06b6d4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-book' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-rocket' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2025</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2025</span>
                         </div>
                     </div>
                     
@@ -777,12 +736,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">学习如何设计一个在所有屏幕尺寸上都表现完美的网站</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                响应式网页设计：从零构建适配各种设备的网站在当今多设备访问的时代，响应式网页设计已成为前端开发的标准实践。本文将指导你如何从零开始构建一个能够适配从手机到大屏幕显示器的各种设备的网站。
-什么是响应式设...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -802,15 +755,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2025/05/27/JavaScript%E5%85%A5%E9%97%A8%EF%BC%9ADOM%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86/" class="card-link ">
-                <div class="card " data-index="2">
+                <div class="card" data-index="2">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#06b6d4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-file-alt' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-rocket' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2025</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2025</span>
                         </div>
                     </div>
                     
@@ -821,11 +778,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">掌握JavaScript与网页交互的基础知识</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                JavaScript入门：DOM操作与事件处理JavaScript是现代网页交互的核心技术，而DOM操作和事件处理则是JavaScript与网页交互的基础。本文将带你深入了解如何使用JavaScrip...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -845,15 +797,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2025/05/27/CSS%E5%8A%A8%E7%94%BB%E5%AE%9E%E6%88%98%EF%BC%9A%E6%89%93%E9%80%A0%E6%B5%81%E7%95%85%E7%9A%84%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2/" class="card-link ">
-                <div class="card " data-index="3">
+                <div class="card" data-index="3">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#06b6d4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-pen' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-rocket' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2025</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2025</span>
                         </div>
                     </div>
                     
@@ -864,11 +820,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">学习如何使用CSS3动画属性创建专业级用户界面效果</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                CSS动画实战：打造流畅的用户界面在现代网页设计中，流畅的动画效果已经成为提升用户体验的重要因素。本文将带你深入了解CSS动画的核心概念和实战技巧，从基础的过渡效果到复杂的关键帧动画，全面掌握如何打造...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -888,15 +839,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2025/05/26/HTML1/" class="card-link ">
-                <div class="card " data-index="4">
+                <div class="card" data-index="4">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#06b6d4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-code' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-rocket' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2025</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2025</span>
                         </div>
                     </div>
                     
@@ -905,13 +860,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                             多页面的静态 适合作为前端初学者的练手项目或小型展示网站
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                🌐 静态网站项目结构与功能介绍这是一个多页面的静态网站项目，适合作为前端初学者的练手项目或小型展示网站。项目以 HTML 和 CSS 构建，结构清晰，功能分明，便于理解与扩展。
-
-🔧 功能页面说明...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -935,15 +883,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
         
         
             <a href="/2024/05/28/%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98%EF%BC%9A%E6%9E%84%E5%BB%BA%E5%93%8D%E5%BA%94%E5%BC%8F%E4%B8%AA%E4%BA%BA%E4%BD%9C%E5%93%81%E9%9B%86%E7%BD%91%E7%AB%99/" class="card-link col-span-2 card-wide">
-                <div class="card persistent-hover" data-index="0">
+                <div class="card" data-index="0">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#64748b">
+                        <i class="fas fa-brain"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-newspaper' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-brain' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2024</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2024</span>
                         </div>
                     </div>
                     
@@ -954,20 +906,15 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">从零开始打造一个展示个人作品的专业网站</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                前端项目实战：构建响应式个人作品集网站作为前端开发者，拥有一个能够展示自己作品的个人网站是非常重要的。无论你是正在寻找工作的大学生，还是想要展示自己技能的自由职业者，一个精心设计的作品集网站都能让你在...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
                         <div class="card-tags">
                             
                                 
-                                    <span class="card-tag">#HTML</span>
-                                
                                     <span class="card-tag">#CSS</span>
+                                
+                                    <span class="card-tag">#前端开发</span>
                                 
                             
                         </div>
@@ -978,15 +925,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2024/05/27/%E5%A4%A7%E5%AD%A6%E7%94%9F%E5%89%8D%E7%AB%AF%E4%BD%9C%E5%93%81%E9%9B%86%EF%BC%9A%E5%A6%82%E4%BD%95%E6%89%93%E9%80%A0%E4%BB%A4%E4%BA%BA%E5%8D%B0%E8%B1%A1%E6%B7%B1%E5%88%BB%E7%9A%84%E9%A1%B9%E7%9B%AE%E5%B1%95%E7%A4%BA/" class="card-link ">
-                <div class="card " data-index="1">
+                <div class="card" data-index="1">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#64748b">
+                        <i class="fas fa-brain"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-book' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-brain' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2024</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2024</span>
                         </div>
                     </div>
                     
@@ -997,11 +948,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">从零开始构建一个能够打动招聘官的前端作品集</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                大学生前端作品集：如何打造令人印象深刻的项目展示作为一名即将毕业或正在寻找实习机会的前端开发专业大学生，一个精心打造的作品集可能是你获得面试机会的关键。在竞争激烈的就业市场中，如何让你的作品集脱颖而出...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -1021,15 +967,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2024/05/26/JavaScript%E4%BA%92%E5%8A%A8%E7%89%B9%E6%95%88%EF%BC%9A%E6%8F%90%E5%8D%87%E7%BD%91%E9%A1%B5%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E7%9A%8410%E4%B8%AA%E6%8A%80%E5%B7%A7/" class="card-link ">
-                <div class="card " data-index="2">
+                <div class="card" data-index="2">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#64748b">
+                        <i class="fas fa-brain"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-file-alt' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-brain' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2024</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2024</span>
                         </div>
                     </div>
                     
@@ -1040,11 +990,6 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">通过简单易用的JavaScript技巧让你的网站脱颖而出</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                JavaScript互动特效：提升网页用户体验的10个技巧在当今竞争激烈的网络环境中，优秀的用户体验已成为网站成功的关键因素之一。JavaScript作为前端开发的核心技术，能够为网站添加丰富的交互效...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
@@ -1064,15 +1009,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
             </a>
         
             <a href="/2024/05/25/HTML%E4%B8%8ECSS%E5%9F%BA%E7%A1%80%EF%BC%9A%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="card-link ">
-                <div class="card " data-index="3">
+                <div class="card" data-index="3">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#64748b">
+                        <i class="fas fa-brain"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-pen' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-brain' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2024</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2024</span>
                         </div>
                     </div>
                     
@@ -1083,20 +1032,15 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">从零开始学习网页开发的基础知识</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                HTML与CSS基础：零基础入门前端开发前端开发是现代互联网世界的重要组成部分，它关注的是用户可以直接看到和交互的网站部分。对于初学者来说，HTML和CSS是进入前端开发领域的第一步。本文将为零基础的...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
                         <div class="card-tags">
                             
                                 
-                                    <span class="card-tag">#HTML</span>
-                                
                                     <span class="card-tag">#CSS</span>
+                                
+                                    <span class="card-tag">#前端开发</span>
                                 
                             
                         </div>
@@ -1145,6 +1089,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // 设置卡片角标的背景颜色
+    const cardBadges = document.querySelectorAll('.card-badge');
+    cardBadges.forEach(badge => {
+        const color = badge.getAttribute('data-color');
+        if (color) {
+            badge.style.backgroundColor = color;
+        }
+    });
+    
     // 初始調整和視窗大小變化時調整
     adjustCardLayout();
     window.addEventListener('resize', adjustCardLayout);
@@ -1153,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- 页脚 - 添加底部padding以避免内容被导航栏遮挡 -->
-    <footer class="py-2 pb-20 border-t mt-0" style="border-color: var(--border-color);">
+    <footer class="py-6 pb-20 border-t mt-8" style="border-color: var(--border-color);">
         <div class="container mx-auto px-4 flex flex-col items-center">
             <p class="text-center text-sm text-secondary mb-1">
                 &copy; 2025 Rick's Blog. Powered by Hexo&Rick
@@ -1166,68 +1119,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     <!-- Custom JS -->
     <script src="/js/script.js" defer></script>
-    <script src="/js/post-cards.js"></script>
     <script>
         // 主题切换相关代码
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            // 显示特殊闪电效果（主题切换专用）
-            const lightningContainer = document.getElementById('lightning-container');
+            // 立即切换主题
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             
-            // 创建临时闪电效果
-            const tempLightning = document.createElement('div');
-            tempLightning.className = 'fixed inset-0 pointer-events-none z-[9998]';
-            tempLightning.style.opacity = '1';
-            tempLightning.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
-                    <path class="lightning-path" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                    <path class="lightning-path" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                    <path class="lightning-path" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                </svg>
-            `;
-            document.body.appendChild(tempLightning);
+            // 更新主题图标
+            const themeIcons = document.querySelectorAll('.theme-toggle i');
+            themeIcons.forEach(icon => {
+                if (newTheme === 'dark') {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
             
-            // 临时隐藏常规闪电效果
-            if (lightningContainer) {
-                lightningContainer.style.opacity = '0';
-            }
+            // 显示主题切换通知
+            showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
             
-            // 延迟切换主题，让闪电效果先显示
-            setTimeout(() => {
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // 更新主题图标
-                const themeIcons = document.querySelectorAll('.theme-toggle i');
-                themeIcons.forEach(icon => {
-                    if (newTheme === 'dark') {
-                        icon.classList.remove('fa-moon');
-                        icon.classList.add('fa-sun');
-                    } else {
-                        icon.classList.remove('fa-sun');
-                        icon.classList.add('fa-moon');
-                    }
-                });
-                
-                // 显示主题切换通知
-                showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
-                
-                // 触发自定义事件，通知其他脚本主题已更改
-                const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
-                document.dispatchEvent(themeChangeEvent);
-                
-                // 隐藏临时闪电效果并恢复常规闪电效果
-                setTimeout(() => {
-                    if (tempLightning.parentNode) {
-                        tempLightning.parentNode.removeChild(tempLightning);
-                    }
-                    if (lightningContainer) {
-                        lightningContainer.style.opacity = '1';
-                    }
-                }, 2000);
-            }, 100);
+            // 触发自定义事件，通知其他脚本主题已更改
+            const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
+            document.dispatchEvent(themeChangeEvent);
         }
 
         // 通知系统

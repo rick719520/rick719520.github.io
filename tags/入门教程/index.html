@@ -52,12 +52,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <!-- Font Awesome via CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Boxicons via CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 禁用hover效果 -->
-    <link rel="stylesheet" href="/css/no-hover.css">
     <style>
         /* 全局盒模型规则 */
         *, *::before, *::after {
@@ -93,72 +89,6 @@
             --accent-color-rgb: 220, 38, 38; /* Rose Red */
             --icon-color: #ffffff;
             --tech-bg: rgba(255, 255, 255, 0.1);
-        }
-
-        /* 闪电效果样式 */
-        #lightning-container {
-            position: fixed;
-            top: 200px;
-            right: 30px;
-            width: 250px;
-            height: 250px;
-            pointer-events: none;
-            z-index: 100;
-            overflow: hidden;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightning-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .lightning-path {
-            stroke: rgba(100, 116, 139, 0.7);
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            opacity: 0;
-        }
-
-        :root[data-theme="dark"] .lightning-path {
-            stroke: rgba(255, 255, 255, 0.7);
-        }
-
-        /* 调整闪电路径的位置 */
-        .lightning-1 {
-            animation: lightning-flash 5s linear infinite;
-            animation-delay: 1.5s;
-            transform: scale(0.5) translate(-50%, -50%);
-        }
-
-        .lightning-2 {
-            animation: lightning-flash 7s linear infinite;
-            animation-delay: 3s;
-            transform: scale(0.5) translate(-20%, -20%);
-        }
-
-        .lightning-3 {
-            animation: lightning-flash 6s linear infinite;
-            animation-delay: 5s;
-            transform: scale(0.5) translate(-30%, -30%);
-        }
-
-        @keyframes lightning-flash {
-            0%, 100% {
-                opacity: 0;
-                stroke-dashoffset: 1000;
-            }
-            0.5%, 0.7% {
-                opacity: 0.8;
-                stroke-dashoffset: 0;
-            }
-            1%, 99% {
-                opacity: 0;
-                stroke-dashoffset: 0;
-            }
         }
 
         /* 页面过渡效果 */
@@ -334,6 +264,10 @@
             <a href="/" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
                 <i class="fas fa-home"></i>
             </a>
+            <a href="/archives" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon relative">
+                <i class="fas fa-archive"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[7px] px-0.5 py-px rounded-full font-medium leading-none">New</span>
+            </a>
             <a href="https://719520.xyz" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
                 <i class="fas fa-globe"></i>
             </a>
@@ -352,26 +286,16 @@
         </div>
     </div>
 
-    <!-- 闪电效果容器 -->
-    <div id="lightning-container" class="fixed pointer-events-none" style="opacity: 1;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
-            <path class="lightning-path lightning-1" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" />
-            <path class="lightning-path lightning-2" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" />
-            <path class="lightning-path lightning-3" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" />
-        </svg>
-    </div>
-
     <!-- 主内容区域 -->
     <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
-        <!-- 使用与首页相同的文章卡片样式 -->
-<!-- Preload critical resources -->
+        
 <link rel="preload" href="/mactowin/styles.css" as="style">
 
 <!-- 載入樣式 -->
 <link rel="stylesheet" href="/mactowin/styles.css">
 
 <style>
-/* 覆蓋某些樣式以整合到主題 */
+
 main.flex-grow.container {
     padding-top: 0 !important;
     width: 100%;
@@ -466,35 +390,42 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
 .card {
     position: relative;
     height: 100%;
-    transition: all 0.25s;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     border-radius: 16px;
     overflow: hidden;
     background-color: var(--card-bg);
     border: 1px solid var(--card-border);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    min-height: 180px;
 }
 
 .card:hover {
-    box-shadow: 0 15px 30px -5px var(--hover-shadow);
-    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px var(--hover-shadow) !important;
+    transform: translateY(-2px) !important;
+}
+
+.card:hover .card-pattern,
+.card:hover .card-border {
+    opacity: 1 !important;
 }
 
 /* 添加持久悬停卡片的样式 */
 .card.persistent-hover {
-    box-shadow: 0 10px 25px -5px var(--hover-shadow);
-    transform: translateY(-2px);
+    box-shadow: none !important;
+    transform: translateY(0) !important;
 }
 
 .card.persistent-hover .card-pattern,
 .card.persistent-hover .card-border {
-    opacity: 1;
+    opacity: 0 !important;
 }
 
 .card-header {
     position: relative;
-    padding: 16px;
+    padding: 16px 16px 8px 16px;
 }
 
 .card-header-content {
@@ -526,14 +457,18 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     position: relative;
     padding: 0 16px 16px;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px;
 }
 
 .card-title {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-color);
-    line-height: 1.3;
-    margin-bottom: 10px;
+    line-height: 1.4;
+    margin-bottom: 0;
 }
 
 .card-meta {
@@ -633,11 +568,11 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     align-items: center;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
-    background-color: var(--card-bg);
+    background-color: transparent;
 }
 
 :root[data-theme="dark"] .pagination-container {
-    background-color: #000 !important;
+    background-color: transparent !important;
 }
 
 .pagination-pill {
@@ -700,6 +635,27 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* 卡片左上角角标样式 */
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 19px;  /* 原来32px的60% */
+    height: 19px; /* 原来32px的60% */
+    border-radius: 6px; /* 适当缩小圆角 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 确保图标正确显示 */
+.card-badge i {
+    font-size: 10px; /* 原来16px的60% */
+    color: white;
+}
 </style>
 
 <div class="header">
@@ -715,15 +671,19 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
         
         
             <a href="/2024/05/25/HTML%E4%B8%8ECSS%E5%9F%BA%E7%A1%80%EF%BC%9A%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="card-link col-span-2 card-wide">
-                <div class="card persistent-hover" data-index="0">
+                <div class="card" data-index="0">
                     <div class="card-pattern"></div>
+                    
+                    <div class="card-badge" data-color="#64748b">
+                        <i class="fas fa-brain"></i>
+                    </div>
                     
                     <div class="card-header">
                         <div class="card-header-content">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-newspaper' style="font-size: 16px;"></i>
+                            <div class="icon-wrapper" style="display: none;">
+                                <i class='fas fa-brain' style="font-size: 16px;"></i>
                             </div>
-                            <span class="status-badge">5月 2024</span>
+                            <span class="status-badge" style="margin-left: auto;">5月 2024</span>
                         </div>
                     </div>
                     
@@ -734,20 +694,15 @@ body:not([data-theme="dark"]) nav.nav-bg .text-primary,
                                 <span class="card-meta">从零开始学习网页开发的基础知识</span>
                             
                         </h3>
-                        <p class="card-description">
-                            
-                                HTML与CSS基础：零基础入门前端开发前端开发是现代互联网世界的重要组成部分，它关注的是用户可以直接看到和交互的网站部分。对于初学者来说，HTML和CSS是进入前端开发领域的第一步。本文将为零基础的...
-                            
-                        </p>
                     </div>
                     
                     <div class="card-footer">
                         <div class="card-tags">
                             
                                 
-                                    <span class="card-tag">#HTML</span>
-                                
                                     <span class="card-tag">#CSS</span>
+                                
+                                    <span class="card-tag">#前端开发</span>
                                 
                             
                         </div>
@@ -796,6 +751,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // 设置卡片角标的背景颜色
+    const cardBadges = document.querySelectorAll('.card-badge');
+    cardBadges.forEach(badge => {
+        const color = badge.getAttribute('data-color');
+        if (color) {
+            badge.style.backgroundColor = color;
+        }
+    });
+    
     // 初始調整和視窗大小變化時調整
     adjustCardLayout();
     window.addEventListener('resize', adjustCardLayout);
@@ -804,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 
     <!-- 页脚 - 添加底部padding以避免内容被导航栏遮挡 -->
-    <footer class="py-2 pb-20 border-t mt-0" style="border-color: var(--border-color);">
+    <footer class="py-6 pb-20 border-t mt-8" style="border-color: var(--border-color);">
         <div class="container mx-auto px-4 flex flex-col items-center">
             <p class="text-center text-sm text-secondary mb-1">
                 &copy; 2025 Rick's Blog. Powered by Hexo&Rick
@@ -817,68 +781,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     <!-- Custom JS -->
     <script src="/js/script.js" defer></script>
-    <script src="/js/post-cards.js"></script>
     <script>
         // 主题切换相关代码
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            // 显示特殊闪电效果（主题切换专用）
-            const lightningContainer = document.getElementById('lightning-container');
+            // 立即切换主题
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             
-            // 创建临时闪电效果
-            const tempLightning = document.createElement('div');
-            tempLightning.className = 'fixed inset-0 pointer-events-none z-[9998]';
-            tempLightning.style.opacity = '1';
-            tempLightning.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
-                    <path class="lightning-path" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                    <path class="lightning-path" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                    <path class="lightning-path" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                </svg>
-            `;
-            document.body.appendChild(tempLightning);
+            // 更新主题图标
+            const themeIcons = document.querySelectorAll('.theme-toggle i');
+            themeIcons.forEach(icon => {
+                if (newTheme === 'dark') {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
             
-            // 临时隐藏常规闪电效果
-            if (lightningContainer) {
-                lightningContainer.style.opacity = '0';
-            }
+            // 显示主题切换通知
+            showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
             
-            // 延迟切换主题，让闪电效果先显示
-            setTimeout(() => {
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // 更新主题图标
-                const themeIcons = document.querySelectorAll('.theme-toggle i');
-                themeIcons.forEach(icon => {
-                    if (newTheme === 'dark') {
-                        icon.classList.remove('fa-moon');
-                        icon.classList.add('fa-sun');
-                    } else {
-                        icon.classList.remove('fa-sun');
-                        icon.classList.add('fa-moon');
-                    }
-                });
-                
-                // 显示主题切换通知
-                showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
-                
-                // 触发自定义事件，通知其他脚本主题已更改
-                const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
-                document.dispatchEvent(themeChangeEvent);
-                
-                // 隐藏临时闪电效果并恢复常规闪电效果
-                setTimeout(() => {
-                    if (tempLightning.parentNode) {
-                        tempLightning.parentNode.removeChild(tempLightning);
-                    }
-                    if (lightningContainer) {
-                        lightningContainer.style.opacity = '1';
-                    }
-                }, 2000);
-            }, 100);
+            // 触发自定义事件，通知其他脚本主题已更改
+            const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
+            document.dispatchEvent(themeChangeEvent);
         }
 
         // 通知系统

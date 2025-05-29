@@ -52,12 +52,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <!-- Font Awesome via CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Boxicons via CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 禁用hover效果 -->
-    <link rel="stylesheet" href="/css/no-hover.css">
     <style>
         /* 全局盒模型规则 */
         *, *::before, *::after {
@@ -93,72 +89,6 @@
             --accent-color-rgb: 220, 38, 38; /* Rose Red */
             --icon-color: #ffffff;
             --tech-bg: rgba(255, 255, 255, 0.1);
-        }
-
-        /* 闪电效果样式 */
-        #lightning-container {
-            position: fixed;
-            top: 200px;
-            right: 30px;
-            width: 250px;
-            height: 250px;
-            pointer-events: none;
-            z-index: 100;
-            overflow: hidden;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightning-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .lightning-path {
-            stroke: rgba(100, 116, 139, 0.7);
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            opacity: 0;
-        }
-
-        :root[data-theme="dark"] .lightning-path {
-            stroke: rgba(255, 255, 255, 0.7);
-        }
-
-        /* 调整闪电路径的位置 */
-        .lightning-1 {
-            animation: lightning-flash 5s linear infinite;
-            animation-delay: 1.5s;
-            transform: scale(0.5) translate(-50%, -50%);
-        }
-
-        .lightning-2 {
-            animation: lightning-flash 7s linear infinite;
-            animation-delay: 3s;
-            transform: scale(0.5) translate(-20%, -20%);
-        }
-
-        .lightning-3 {
-            animation: lightning-flash 6s linear infinite;
-            animation-delay: 5s;
-            transform: scale(0.5) translate(-30%, -30%);
-        }
-
-        @keyframes lightning-flash {
-            0%, 100% {
-                opacity: 0;
-                stroke-dashoffset: 1000;
-            }
-            0.5%, 0.7% {
-                opacity: 0.8;
-                stroke-dashoffset: 0;
-            }
-            1%, 99% {
-                opacity: 0;
-                stroke-dashoffset: 0;
-            }
         }
 
         /* 页面过渡效果 */
@@ -334,6 +264,10 @@
             <a href="/" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
                 <i class="fas fa-home"></i>
             </a>
+            <a href="/archives" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon relative">
+                <i class="fas fa-archive"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[7px] px-0.5 py-px rounded-full font-medium leading-none">New</span>
+            </a>
             <a href="https://719520.xyz" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 dark-mode-icon">
                 <i class="fas fa-globe"></i>
             </a>
@@ -352,27 +286,48 @@
         </div>
     </div>
 
-    <!-- 闪电效果容器 -->
-    <div id="lightning-container" class="fixed pointer-events-none" style="opacity: 1;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
-            <path class="lightning-path lightning-1" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" />
-            <path class="lightning-path lightning-2" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" />
-            <path class="lightning-path lightning-3" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" />
-        </svg>
-    </div>
-
     <!-- 主内容区域 -->
     <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
         <!-- 个人信息容器 -->
-<link rel="stylesheet" href="/css/no-hover.css">
 <style>
+/* 整体页面背景色 */
+html, body {
+    background-color: var(--card-bg);
+}
+
+/* 深色模式下的背景色 */
+:root[data-theme="dark"] html, 
+:root[data-theme="dark"] body,
+html[data-theme="dark"], 
+body[data-theme="dark"] {
+    background-color: #000 !important;
+}
+
+/* 卡片左上角角标样式 */
+.card-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 确保图标正确显示 */
+.card-badge i {
+    font-size: 16px;
+    color: white;
+}
+
 /* 自定义主题配色 - 深蓝色作为主色调，玫红色作为辅助色 */
 :root {
     --custom-blue: #1e2952;
     --custom-red: #b91e47;
-    --card-default-border: linear-gradient(90deg, rgba(30, 41, 82, 0.3) 0%, rgba(30, 41, 82, 0.3) 70%, rgba(185, 30, 71, 0.3) 100%);
-    --hover-shadow: rgba(0, 0, 0, 0.1);
-    --hover-glow: transparent;
 }
 
 :root[data-theme="light"] {
@@ -382,9 +337,9 @@
     --highlight-color-rgb: 30, 41, 82; /* RGB值对应#1e2952 */
     --icon-color: var(--custom-blue);
     --tech-bg: rgba(30, 41, 82, 0.1);
-    --card-default-border: linear-gradient(90deg, rgba(30, 41, 82, 0.2) 0%, rgba(30, 41, 82, 0.2) 70%, rgba(185, 30, 71, 0.2) 100%);
-    --hover-shadow: rgba(0, 0, 0, 0.1);
-    --hover-glow: transparent;
+    --text-primary: #000000; /* 主要文字颜色 - 纯黑 */
+    --text-secondary: #121212; /* 次要文字颜色 - 接近黑 */
+    --text-tertiary: #2d2d2d; /* 第三级文字颜色 - 深灰接近黑 */
 }
 
 :root[data-theme="dark"] {
@@ -394,32 +349,9 @@
     --highlight-color-rgb: 30, 41, 82; /* RGB值对应#1e2952 */
     --icon-color: #ffffff; /* 深色模式下图标使用白色 */
     --tech-bg: rgba(255, 255, 255, 0.1); /* 深色模式下技术标签背景 */
-    --card-default-border: linear-gradient(90deg, rgba(30, 41, 82, 0.4) 0%, rgba(30, 41, 82, 0.4) 70%, rgba(185, 30, 71, 0.4) 100%);
-    --hover-shadow: rgba(0, 0, 0, 0.2);
-    --hover-glow: transparent;
-}
-
-/* 移除任何残留的发光效果相关样式 */
-.post-card::after,
-.card::after,
-.card-glow-effect,
-.card[data-index="0"]::after, 
-.card[data-index="1"]::after, 
-.card[data-index="2"]::after, 
-.card[data-index="3"]::after, 
-.card[data-index="4"]::after, 
-.card[data-index="5"]::after, 
-.card[data-index="6"]::after {
-    display: none !important;
-    opacity: 0 !important;
-    background: none !important;
-    box-shadow: none !important;
-}
-
-/* 移除卡片内任何元素的发光效果 */
-.post-card *,
-.card * {
-    text-shadow: none !important;
+    --text-primary: #ffffff; /* 主要文字颜色 - 纯白 */
+    --text-secondary: #f0f0f0; /* 次要文字颜色 - 接近白 */
+    --text-tertiary: #e0e0e0; /* 第三级文字颜色 - 浅灰接近白 */
 }
 
 /* 应用新配色到特定元素 */
@@ -433,6 +365,120 @@ h3 i.text-highlight {
 
 .banner-title-accent {
     color: var(--custom-blue);
+}
+
+/* 技术栈标签新样式 */
+.tech-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 16px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.3s ease;
+    position: relative;
+    background-color: transparent;
+    margin: 0.2rem;
+    z-index: 1;
+    overflow: hidden;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transform: translateY(0);
+}
+
+/* 主色调技术标签 */
+.tech-tag-primary {
+    color: #1e2952;
+    border-color: rgba(30, 41, 82, 0.3);
+}
+
+/* 辅助色调技术标签 */
+.tech-tag-accent {
+    color: #b91e47;
+    border-color: rgba(185, 30, 71, 0.3);
+}
+
+/* 技术标签悬停效果 */
+.tech-tag::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.1;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%);
+}
+
+.tech-tag-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(135deg, rgba(var(--highlight-color-rgb), 0.1), transparent);
+    opacity: 0.2;
+}
+
+.tech-tag-accent::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(135deg, rgba(185, 30, 71, 0.1), transparent);
+    opacity: 0.2;
+}
+
+.tech-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+
+.tech-tag:hover::before {
+    transform: translateX(100%);
+    opacity: 0.3;
+}
+
+/* 技术标签图标 */
+.tech-tag i {
+    margin-right: 0.25rem;
+    font-size: 0.65rem;
+    transition: transform 0.3s ease;
+}
+
+.tech-tag:hover i {
+    transform: scale(1.15);
+}
+
+/* 深色模式下的技术标签调整 */
+[data-theme="dark"] .tech-tag {
+    border-width: 1px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .tech-tag-primary {
+    border-color: rgba(100, 140, 255, 0.3);
+    color: rgba(180, 200, 255, 0.95);
+}
+
+[data-theme="dark"] .tech-tag-accent {
+    border-color: rgba(255, 100, 150, 0.3);
+    color: rgba(255, 150, 180, 0.95);
+}
+
+[data-theme="dark"] .tech-tag-primary::after {
+    background: linear-gradient(135deg, rgba(100, 140, 255, 0.15), transparent);
+}
+
+[data-theme="dark"] .tech-tag-accent::after {
+    background: linear-gradient(135deg, rgba(255, 100, 150, 0.15), transparent);
+}
+
+[data-theme="dark"] .tech-tag:hover {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
 }
 
 /* 确保分割线与内容区域对齐 */
@@ -455,18 +501,6 @@ h3 i.text-highlight {
     transform: translateX(0); /* 移除右偏移 */
 }
 
-@media (min-width: 1024px) {
-    .banner-image-right {
-        transform: translateX(0);
-    }
-}
-
-@media (min-width: 1280px) {
-    .banner-image-right {
-        transform: translateX(0);
-    }
-}
-
 /* 卡片默认不显示网格效果 */
 #bento-grid .card .card-pattern {
     opacity: 0 !important;
@@ -480,32 +514,11 @@ h3 i.text-highlight {
 #bento-grid .card:not(:hover) .card-border {
     opacity: 0 !important;
 }
-/* 确保卡片在非悬停状态下不显示阴影和位移效果，但显示默认边框 */
+/* 确保卡片在非悬停状态下不显示阴影和位移效果 */
 #bento-grid .card:not(:hover) {
     box-shadow: none !important;
     transform: translateY(0) !important;
     background-color: var(--card-bg);
-    border: 1px solid transparent;
-    background-image: linear-gradient(var(--card-bg), var(--card-bg)), var(--card-default-border);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-image 0.4s ease;
-}
-
-/* 移除卡片悬停样式，移除任何可能导致发光的效果 */
-#bento-grid .card:hover {
-    border: 1px solid transparent;
-    background-image: none;
-    transform: translateY(0); /* 移除上移效果 */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 保持与非悬停状态相同的阴影 */
-    border-color: rgba(0, 0, 0, 0.08); /* 保持与非悬停状态相同的边框颜色 */
-    z-index: 1; /* 确保悬停的卡片在上层 */
-}
-
-/* 移除图标悬停样式 */
-.post-card:hover .icon-wrapper {
-    transform: none; /* 移除缩放效果 */
-    box-shadow: none; /* 确保没有阴影 */
 }
 
 /* 不同文章卡片的图标颜色 */
@@ -519,17 +532,79 @@ h3 i.text-highlight {
 
 /* 桌面端图片位置固定 - 无论宽度如何变化 */
 .banner-bg-image {
-    opacity: 1;
+}
+
+/* 卡片边框渐变样式 - 使用与Banner底部分割线相同的配色，但方向相反 */
+.card-gradient-border {
+    border: none !important;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 居中对齐 */
+    z-index: 1;
+}
+
+.card-gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: 0.75rem; /* rounded-xl */
+    background: linear-gradient(270deg, 
+        rgba(30, 41, 82, 0.05) 0%, 
+        rgba(30, 41, 82, 0.08) 30%, 
+        rgba(185, 30, 71, 0.1) 100%);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+}
+
+/* 深色模式下增加边框可见度 */
+[data-theme="dark"] .card-gradient-border::before {
+    padding: 1.5px; /* 增加边框宽度 */
+    background: linear-gradient(270deg, 
+        rgba(100, 140, 255, 0.25) 0%, 
+        rgba(120, 160, 255, 0.3) 30%, 
+        rgba(255, 100, 150, 0.35) 100%);
+    box-shadow: 0 0 6px rgba(120, 160, 255, 0.15); /* 减弱发光效果 */
+}
+
+/* 深色模式下工具卡片的特殊处理 */
+[data-theme="dark"] .dark-tools-card::before {
+    padding: 1.5px; /* 增加边框宽度 */
+    background: linear-gradient(270deg, 
+        rgba(100, 140, 255, 0.2) 0%, 
+        rgba(120, 160, 255, 0.25) 30%, 
+        rgba(255, 100, 150, 0.3) 100%);
+    box-shadow: 0 0 6px rgba(120, 160, 255, 0.15); /* 减弱发光效果 */
+    display: block !important; /* 确保边框显示 */
+}
+
+/* 工具卡片在深色模式下的特殊样式 */
+.tool-card {
+    border: 0.5px solid rgba(229, 231, 235, 0.7); /* 浅色模式下的边框 */
+    border-radius: 0.5rem;
+    padding: 0.625rem;
     height: 100%;
-    width: 100%;
-    z-index: 0;
-    padding: 15px;
-    padding-right: 20px; /* 右侧增加一点内边距 */
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+    position: relative;
+    background-color: transparent;
+}
+
+/* 深色模式下完全移除边框和阴影 */
+[data-theme="dark"] .tool-card {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* 确保深色模式下悬停时也没有边框和阴影 */
+[data-theme="dark"] .tool-card:hover {
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
 .banner-bg-image img {
@@ -556,38 +631,100 @@ h3 i.text-highlight {
         height: 380px; /* 增加移动端banner高度 */
     }
 }
+
+/* 学习路线图卡片优化 */
+.roadmap-card {
+    transition: all 0.3s ease;
+}
+
+.roadmap-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* 路线图进度条 */
+.roadmap-progress {
+    height: 6px;
+    background: linear-gradient(to right, #3b82f6 0%, #6366f1 50%, #8b5cf6 75%, #d1d5db 75%);
+    border-radius: 3px;
+}
+
+[data-theme="dark"] .roadmap-progress {
+    background: linear-gradient(to right, #60a5fa 0%, #818cf8 50%, #a78bfa 75%, #4b5563 75%);
+}
+
+/* 完成项目图标颜色 */
+.completed-icon {
+    color: #22c55e; /* 绿色 */
+}
+
+[data-theme="dark"] .completed-icon {
+    color: #4ade80; /* 深色模式亮绿色 */
+}
+
+/* 进行中项目图标颜色 */
+.in-progress-icon {
+    color: #6366f1; /* 靛蓝色 */
+}
+
+[data-theme="dark"] .in-progress-icon {
+    color: #818cf8; /* 深色模式亮靛蓝色 */
+}
+
+/* 锁定项目图标颜色 */
+.locked-icon {
+    color: #9ca3af; /* 灰色 */
+}
+
+[data-theme="dark"] .locked-icon {
+    color: #6b7280; /* 深色模式深灰色 */
+}
+
+/* 路线图标签颜色 */
+.stage-name-1 {color: #3b82f6;}
+.stage-name-2 {color: #6366f1;}
+.stage-name-3 {color: #8b5cf6;}
+.stage-name-4 {color: #6b7280;}
+
+[data-theme="dark"] .stage-name-1 {color: #60a5fa;}
+[data-theme="dark"] .stage-name-2 {color: #818cf8;}
+[data-theme="dark"] .stage-name-3 {color: #a78bfa;}
+[data-theme="dark"] .stage-name-4 {color: #9ca3af;}
+
+/* 段落文字颜色控制 */
+.text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--text-tertiary) !important;
+}
 </style>
 
 <!-- 博客 Banner -->
-<div class="w-full relative overflow-hidden banner-container" style="height: 320px; margin-bottom: 40px;">
+<div class="w-full relative overflow-hidden banner-container" style="height: 260px; margin-bottom: 40px;">
     <!-- Banner 内容 - 5:5布局 -->
     <div class="w-full h-full relative">
         <div class="container mx-auto max-w-6xl h-full px-4 md:px-6">
             <div class="grid grid-cols-1 md:grid-cols-2 h-full">
-                <!-- 左侧 - 个人信息 (5/10) -->
+                <!-- 左侧 - 前端作品展示平台信息 -->
                 <div class="w-full h-full flex items-center relative z-10">
-                    <!-- 个人信息 -->
                     <div class="w-full text-center md:text-left px-4">
-                        <!-- 文字内容 -->
                         <div class="w-full">
-                            <!-- 标题 -->
-                            <div class="mb-3">
-                                <h2 class="text-xl md:text-2xl font-bold text-primary">前端作品展示平台</h2>
-                            </div>
+                            <h2 class="text-xl md:text-2xl font-bold text-primary mb-2">前端作品展示平台</h2>
+                            <p class="text-sm text-secondary mb-3">这是一个专为前端新手和大学生设计的作品展示平台。我自己写了不少大量用 HTML、CSS 和 JavaScript 编写的静态网页项目，涵盖了课程作业、个人练习、期末项目等内容。</p>
                             
-                            <!-- 介绍文本 -->
-                            <div class="mt-2 text-sm text-secondary">
-                                <p class="mb-3">这是一个专为前端新手和大学生设计的作品展示平台。我自己写了不少大量用 HTML、CSS 和 JavaScript 编写的静态网页项目，涵盖了课程作业、个人练习、期末项目等内容。</p>
-                                
-                                <div class="mt-3">
-                                    <p class="font-semibold mb-2">这里适合：</p>
-                                    <ul class="list-disc pl-5 space-y-1">
-                                        <li>正在学习前端开发的入门者</li>
-                                        <li>想找期末作业灵感的大学生</li>
-                                        <li>希望展示个人作品的学生开发者</li>
-                                        <li>对前端设计与实现感兴趣的朋友</li>
-                                    </ul>
-                                </div>
+                            <div class="text-xs text-secondary mt-2">
+                                <p class="mb-1">这里适合：</p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>正在学习前端开发的入门者</li>
+                                    <li>想找期末作业灵感的大学生</li>
+                                    <li>希望展示个人作品的学生开发者</li>
+                                    <li>对前端设计与实现感兴趣的朋友</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -596,17 +733,7 @@ h3 i.text-highlight {
                 <!-- 右侧 - 图片 (5/10) -->
                 <div class="hidden md:flex items-center justify-center h-full" style="position: relative; overflow: visible;">
                     <div class="banner-bg-image">
-                        <img id="banner-random-image" src="https://cab0110.webp.li/PicGO/20250524194558015.png" alt="Background Image" class="object-contain" style="max-width: 90%; max-height: 220px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
-                    </div>
-                    
-                    <!-- 添加左右箭头 - 移到外层div -->
-                    <div class="banner-nav-arrows">
-                        <button id="banner-prev" class="banner-arrow banner-arrow-left" aria-label="上一张图片" onclick="switchBannerImage('prev')">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button id="banner-next" class="banner-arrow banner-arrow-right" aria-label="下一张图片" onclick="switchBannerImage('next')">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                        <img id="banner-random-image" src="https://cab0110.webp.li/PicGO/20250525183506914.png" alt="Background Image" class="object-contain" style="max-width: 90%; max-height: 220px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
                     </div>
                 </div>
             </div>
@@ -626,7 +753,6 @@ h3 i.text-highlight {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        height: 420px; /* 增加移动端banner高度以适应新内容 */
     }
     
     /* 确保文本在移动端左对齐 */
@@ -642,15 +768,36 @@ h3 i.text-highlight {
         margin-bottom: 0.5rem;
     }
     
-    /* 调整列表项样式 */
-    .list-disc li {
-        margin-bottom: 8px;
+    /* 调整位置标签在移动端的对齐 */
+    .flex.flex-wrap.gap-2.mt-2\.5.justify-center.md\:justify-start {
+        justify-content: flex-start !important;
     }
     
     /* 增加移动端文本间距 */
-    .mt-2.text-sm.text-secondary {
+    .mt-2\.5.text-xs.text-secondary {
         margin-top: 1rem;
-        font-size: 0.9rem;
+    }
+    
+    /* 调整移动端段落间距 */
+    .mt-2\.5.text-xs.text-secondary > div {
+        margin-bottom: 0.75rem;
+    }
+    
+    /* 确保技术标签在移动端正确显示 */
+    .flex.flex-wrap.gap-2.mt-1 {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* 在移动端隐藏Technologies部分 */
+    .mt-2\.5.text-xs.text-secondary > div:last-child {
+        display: none !important;
+    }
+    
+    /* 使用类名隐藏Technologies部分 */
+    .technologies-section {
+        display: none !important;
     }
 }
 
@@ -663,577 +810,439 @@ h3 i.text-highlight {
     position: relative;
     z-index: 1;
 }
-
-.banner-nav-arrows {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 2; /* 确保箭头在图片上层 */
-}
-
-.banner-arrow {
-    background-color: rgba(255, 255, 255, 0.7);
-    border: none;
-    border-radius: 50%;
-    width: 36px; /* 增加按钮尺寸 */
-    height: 36px; /* 增加按钮尺寸 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer !important;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-    margin: 0 10px; /* 增加左右边距 */
-}
-
-.banner-arrow:hover {
-    background-color: rgba(255, 255, 255, 0.7); /* 与非悬停状态相同 */
-    transform: none; /* 移除缩放效果 */
-}
-
-/* 添加点击效果 */
-.banner-arrow-active {
-    transform: scale(0.9) !important;
-    background-color: rgba(30, 41, 82, 0.7) !important;
-}
-
-.banner-arrow-active i {
-    color: white !important;
-}
-
-.banner-arrow i {
-    font-size: 16px; /* 增加图标尺寸 */
-    color: #333;
-}
-
-/* 深色模式下的箭头样式 */
-[data-theme="dark"] .banner-arrow {
-    background-color: rgba(50, 50, 50, 0.8);
-}
-
-[data-theme="dark"] .banner-arrow i {
-    color: white;
-}
-
-[data-theme="dark"] .banner-arrow:hover {
-    background-color: rgba(70, 70, 70, 0.9);
-}
-
-/* 深色模式下的点击效果 */
-[data-theme="dark"] .banner-arrow-active {
-    background-color: rgba(185, 30, 71, 0.7) !important;
-}
 </style>
 
 <!-- 添加banner图片切换的JavaScript -->
 <script>
-// 定义全局变量和函数，使其可以通过onclick属性访问
-let bannerImages = [
-    "https://cab0110.webp.li/PicGO/20250524194558015.png", // 原始图片
-    "https://cab0110.webp.li/PicGO/20250525183506914.png", // 新增图片1
-    "https://cab0110.webp.li/PicGO/20250525183447511.png", // 新增图片2
-    // 如果需要，可以在这里添加更多图片
+// 定义图片数组
+const bannerImages = [
+    "https://cab0110.webp.li/PicGO/20250525183506914.png", // 日间模式图片
+    "https://cab0110.webp.li/PicGO/20250525183506914.png", // 夜间模式图片
 ];
 
-let currentImageIndex = 0;
-
-// 全局函数，用于通过onclick属性调用
-function switchBannerImage(direction) {
-    console.log("切换图片被调用，方向：", direction);
-    
-    // 计算新的索引
-    if (direction === 'prev') {
-        currentImageIndex = (currentImageIndex - 1 + bannerImages.length) % bannerImages.length;
-    } else {
-        currentImageIndex = (currentImageIndex + 1) % bannerImages.length;
-    }
-    
-    console.log("新的图片索引：", currentImageIndex);
-    console.log("将要显示的图片URL：", bannerImages[currentImageIndex]);
-    
-    // 获取图片元素并直接设置src
-    const bannerImageElement = document.getElementById('banner-random-image');
-    if (bannerImageElement) {
-        bannerImageElement.src = bannerImages[currentImageIndex];
-        
-        // 添加点击效果到按钮
-        const clickedButton = direction === 'prev' ? document.getElementById('banner-prev') : document.getElementById('banner-next');
-        if (clickedButton) {
-            clickedButton.classList.add('banner-arrow-active');
-            setTimeout(() => {
-                clickedButton.classList.remove('banner-arrow-active');
-            }, 200);
-        }
-    }
-    
-    return false; // 阻止默认行为
-}
-
+// 页面加载完成后的初始化函数
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM加载完成，初始化banner图片切换");
-    
-    // 获取DOM元素
+    // Banner图片初始化
     const bannerImageElement = document.getElementById('banner-random-image');
-    const prevButton = document.getElementById('banner-prev');
-    const nextButton = document.getElementById('banner-next');
     
-    console.log("找到banner图片元素：", !!bannerImageElement);
-    console.log("找到上一张按钮：", !!prevButton);
-    console.log("找到下一张按钮：", !!nextButton);
-    
-    // 添加事件监听
-    if (prevButton) {
-        prevButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            switchBannerImage('prev');
-        });
-    }
-    
-    if (nextButton) {
-        nextButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            switchBannerImage('next');
-        });
-    }
-    
-    // 初始化显示第一张图片
     if (bannerImageElement) {
-        bannerImageElement.src = bannerImages[currentImageIndex];
+        // 根据当前主题设置初始图片
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const imageIndex = currentTheme === 'dark' ? 1 : 0;
+        
+        // 设置初始图片
+        bannerImageElement.src = bannerImages[imageIndex];
+        
+        // 监听主题变化事件，更新banner图片
+        document.addEventListener('themeChanged', function(e) {
+            const newTheme = e.detail.theme;
+            const newImageIndex = newTheme === 'dark' ? 1 : 0;
+            bannerImageElement.src = bannerImages[newImageIndex];
+        });
     }
+    
+    // 技术标签淡入动画
+    const techTags = document.querySelectorAll('.tech-tag');
+    techTags.forEach((tag, index) => {
+        // 初始状态：透明且稍微向下偏移
+        tag.style.opacity = '0';
+        tag.style.transform = 'translateY(6px)';
+        
+        // 延迟显示每个标签，创建波浪效果
+        setTimeout(() => {
+            tag.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            tag.style.opacity = '1';
+            tag.style.transform = 'translateY(0)';
+        }, 80 + (index * 80)); // 每个标签延迟80ms
+    });
+    
+    // 科研工具分类标签筛选功能
+    const toolCategoryButtons = document.querySelectorAll('.flex.overflow-x-auto.mb-3.pb-1.no-scrollbar button');
+    const toolItems = document.querySelectorAll('.grid.grid-cols-2.gap-3.flex-grow > div');
+    
+    // 为每个分类按钮添加点击事件
+    toolCategoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // 更新按钮样式
+            toolCategoryButtons.forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'text-blue-700', 'dark:bg-blue-900', 'dark:text-blue-300');
+                btn.classList.add('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
+            });
+            
+            this.classList.remove('bg-gray-100', 'text-gray-700', 'dark:bg-gray-800', 'dark:text-gray-300');
+            this.classList.add('bg-blue-100', 'text-blue-700', 'dark:bg-blue-900', 'dark:text-blue-300');
+            
+            // 获取按钮中显示的文本
+            // 对于带有响应式span的按钮，获取当前可见的span中的文本
+            let category;
+            const visibleSpan = this.querySelector('span:not(.hidden)');
+            if (visibleSpan) {
+                category = visibleSpan.textContent.trim();
+            } else {
+                category = this.textContent.trim();
+            }
+            
+            // 根据分类显示/隐藏工具
+            if (category === 'All') {
+                // 显示所有工具
+                toolItems.forEach(item => {
+                    item.style.display = 'flex'; // 改为flex以保持flex-col布局
+                });
+            } else {
+                // 显示特定类别工具（这里简单模拟，实际应用中可能需要给工具添加类别属性）
+                const categoryMap = {
+                    'Model Training': [0, 1], // 第1、2个工具属于模型训练
+                    'Data Processing': [2],     // 第3个工具属于数据处理
+                    'Research Efficiency': [3],      // 第4个工具属于研究效率
+                    'Research Eff.': [3]      // 为移动端的缩写版本添加相同的映射
+                };
+                
+                toolItems.forEach((item, index) => {
+                    if (categoryMap[category] && categoryMap[category].includes(index)) {
+                        item.style.display = 'flex'; // 改为flex以保持flex-col布局
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+            }
+            
+            // 添加简单的过渡动画
+            toolItems.forEach((item, index) => {
+                if (item.style.display !== 'none') {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(10px)';
+                    setTimeout(() => {
+                        item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 50 * index);
+                }
+            });
+        });
+    });
+    
+    // 为工具卡片添加悬停效果
+    const toolCards = document.querySelectorAll('.grid.grid-cols-2.gap-3.flex-grow > div');
+    toolCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+            this.style.transform = 'translateY(-1px)';
+            this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.03)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
 });
 </script>
 
 <section class="w-full max-w-6xl mx-auto my-2 rounded-xl transition-all duration-300 overflow-hidden card" style="border: none; background-color: transparent; margin-top: -40px; box-shadow: none !important;">
     <div class="px-4 md:px-6 py-4 md:py-6">
-        <!-- 最新文章区域 -->
-        <div class="mb-6">
-            <link rel="stylesheet" href="/mactowin/styles.css">
-            <style>
-                /* 宽卡片样式 */
-                .card-wide {
-                    grid-column: span 1;
-                }
-                
-                @media (min-width: 640px) {
-                    .card-wide {
-                        grid-column: span 2 !important;
-                    }
-                }
-                
-                /* 覆盖持久悬停效果，使所有卡片行为一致 */
-                #bento-grid .card.persistent-hover {
-                    box-shadow: none !important;
-                    transform: translateY(0) !important;
-                }
-                
-                #bento-grid .card.persistent-hover .card-pattern,
-                #bento-grid .card.persistent-hover .card-border {
-                    opacity: 0 !important;
-                }
-                
-                /* 确保所有卡片没有特效 */
-                #bento-grid .card, 
-                #bento-grid .card:hover {
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                    transform: none !important;
-                    transition: none;
-                    border: 1px solid rgba(0, 0, 0, 0.08);
-                    background-image: none;
-                }
-                
-                [data-theme="dark"] #bento-grid .card,
-                [data-theme="dark"] #bento-grid .card:hover {
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                }
-                
-                /* 移除卡片悬停时的所有特效 */
-                #bento-grid .card:hover .card-pattern,
-                #bento-grid .card:hover .card-border,
-                #bento-grid .card .card-pattern,
-                #bento-grid .card .card-border {
-                    display: none;
-                    opacity: 0 !important;
-                }
-                
-                /* 移除标签悬停效果 */
-                .post-card:hover .card-tag,
-                .post-card .card-tag {
-                    transform: none !important;
-                    transition: none;
-                }
-                
-                /* 移除图标悬停效果 */
-                .post-card:hover .icon-wrapper,
-                .post-card:hover .icon-wrapper i,
-                .post-card .icon-wrapper,
-                .post-card .icon-wrapper i {
-                    transform: none !important;
-                    transition: none;
-                    animation: none !important;
-                }
-                
-                /* 调整bento-grid的布局，严格按照参考图片 */
-                #bento-grid.bento-grid {
-                    padding: 0;
-                    width: 100%;
-                    max-width: 100%;
-                    display: grid;
-                    grid-template-columns: repeat(12, 1fr);
-                    gap: 20px;
-                }
-                
-                /* 卡片宽度类 */
-                .card-col-4 {
-                    grid-column: span 4;
-                }
-                
-                .card-col-4-5 {
-                    grid-column: span 4;
-                }
-                
-                .card-col-7-5 {
-                    grid-column: span 8;
-                }
-                
-                @media (max-width: 1279px) {
-                    .card-col-4, .card-col-4-5 {
-                        grid-column: span 6;
-                    }
-                    
-                    .card-col-7-5 {
-                        grid-column: span 12;
-                    }
-                }
-                
-                @media (max-width: 767px) {
-                    .card-col-4, .card-col-4-5, .card-col-7-5 {
-                        grid-column: span 12;
-                    }
-                    
-                    #bento-grid.bento-grid {
-                        gap: 16px;
-                    }
-                }
-
-                /* 简化卡片样式 */
-                .post-card {
-                    position: relative;
-                    background-color: var(--card-bg);
-                    border-radius: 16px;
-                    padding: 24px;
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                    min-height: 180px; /* 确保卡片有最小高度 */
-                    border: 1px solid rgba(0, 0, 0, 0.08);
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-                }
-                
-                [data-theme="dark"] .post-card {
-                    border: 1px solid rgba(255, 255, 255, 0.08);
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-                }
-
-                /* 卡片链接 */
-                .card-link {
-                    text-decoration: none;
-                    color: inherit;
-                    display: block;
-                    height: 100%;
-                }
-
-                /* 卡片头部 */
-                .card-header {
-                    margin-bottom: 16px;
-                    position: relative;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-
-                /* 卡片日期 */
-                .card-date {
-                    font-size: 13px;
-                    color: var(--text-secondary);
-                    font-weight: 500;
-                }
-
-                /* 卡片内容 */
-                .card-content {
-                    display: flex;
-                    flex-direction: column;
-                    flex: 1;
-                    margin-bottom: 16px;
-                    position: relative;
-                }
-
-                .post-title {
-                    font-size: 17px;
-                    font-weight: 600;
-                    line-height: 1.4;
-                    color: var(--text-color);
-                    margin-bottom: 8px;
-                }
-                
-                /* 副标题/描述 */
-                .card-meta {
-                    display: block;
-                    font-size: 14px;
-                    color: var(--text-secondary);
-                    margin-top: 6px;
-                    font-weight: normal;
-                    line-height: 1.5;
-                }
-
-                /* 图标样式 */
-                .icon-wrapper {
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin-right: 0;
-                    flex-shrink: 0;
-                }
-                
-                /* 彩色图标背景 */
-                .card[data-index="0"] .icon-wrapper { background-color: rgba(59, 130, 246, 0.15); }
-                .card[data-index="1"] .icon-wrapper { background-color: rgba(236, 72, 153, 0.15); }
-                .card[data-index="2"] .icon-wrapper { background-color: rgba(16, 185, 129, 0.15); }
-                .card[data-index="3"] .icon-wrapper { background-color: rgba(245, 158, 11, 0.15); }
-                .card[data-index="4"] .icon-wrapper { background-color: rgba(139, 92, 246, 0.15); }
-
-                .icon-wrapper i {
-                    font-size: 18px;
-                }
-                
-                /* 文章卡片图标颜色 */
-                .card[data-index="0"] .icon-wrapper i { color: #3b82f6; }
-                .card[data-index="1"] .icon-wrapper i { color: #ec4899; }
-                .card[data-index="2"] .icon-wrapper i { color: #10b981; }
-                .card[data-index="3"] .icon-wrapper i { color: #f59e0b; }
-                .card[data-index="4"] .icon-wrapper i { color: #8b5cf6; }
-
-                /* 标签样式 */
-                .card-footer {
-                    margin-top: auto;
-                    padding-top: 14px;
-                    border-top: 1px solid rgba(0, 0, 0, 0.04);
-                }
-                
-                [data-theme="dark"] .card-footer {
-                    border-top: 1px solid rgba(255, 255, 255, 0.04);
-                }
-
-                .card-tags {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                }
-
-                .card-tag {
-                    font-size: 12px;
-                    color: var(--text-secondary);
-                    background-color: rgba(0, 0, 0, 0.03);
-                    padding: 5px 10px;
-                    border-radius: 6px;
-                    font-weight: 500;
-                }
-                
-                [data-theme="dark"] .card-tag {
-                    background-color: rgba(255, 255, 255, 0.05);
-                }
-                
-                /* 卡片布局调整 */
-                #bento-grid {
-                    gap: 20px;
-                }
-                
-                @media (max-width: 768px) {
-                    .post-card {
-                        padding: 20px;
-                        border-radius: 14px;
-                    }
-                    
-                    .icon-wrapper {
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 8px;
-                    }
-                    
-                    .post-title {
-                        font-size: 16px;
-                    }
-                    
-                    .card-meta {
-                        font-size: 13px;
-                    }
-                    
-                    .card-tag {
-                        padding: 4px 8px;
-                    }
-                    
-                    #bento-grid {
-                        gap: 16px;
-                    }
-                }
-                
-                /* 限制每页显示的文章数量为5个 */
-                .limited-posts {
-                    max-width: 100%;
-                }
-            </style>
-            <div class="bento-grid limited-posts" id="bento-grid">
-                <!-- 文章列表，限制最多显示4篇文章，第5个卡片为固定内容 -->
-                
-                    <a href="/2024/05/25/HTML%E4%B8%8ECSS%E5%9F%BA%E7%A1%80%EF%BC%9A%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" class="card-link card-col-4">
-                        <div class="card post-card" data-index="0">
-                            <div class="card-header">
-                                <div class="icon-wrapper">
-                                    
-                                    <i class='fas fa-newspaper'></i>
-                                </div>
-                                <div class="card-date">
-                                    5月 2024
-                                </div>
+        <!-- 功能卡片区域 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-3">
+            <!-- 卡片1: 响应式个人作品集网站 -->
+            <div class="rounded-xl shadow-sm card-gradient-border overflow-hidden" style="background: transparent;">
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-laptop text-white text-sm"></i>
+                        </div>
+                        <h3 class="text-base font-semibold text-primary">响应式个人作品集</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            <span class="tech-tag tech-tag-primary"><i class="fab fa-html5"></i>HTML5</span>
+                            <span class="tech-tag tech-tag-accent"><i class="fab fa-css3-alt"></i>CSS3</span>
+                            <span class="tech-tag tech-tag-primary"><i class="fab fa-js"></i>JavaScript</span>
+                            <span class="tech-tag tech-tag-accent"><i class="fas fa-mobile-alt"></i>响应式设计</span>
+                        </div>
+                        <p class="text-sm text-secondary mb-3">一个展示个人作品的响应式网站，适配不同屏幕尺寸，包含作品展示、个人简介和联系方式等模块。</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">多设备适配布局</span>
                             </div>
-                            <div class="card-content">
-                                <h3 class="post-title">
-                                    HTML与CSS基础：零基础入门前端开发
-                                </h3>
-                                
-                                    <span class="card-meta">从零开始学习网页开发的基础知识</span>
-                                
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">作品筛选与展示</span>
                             </div>
-                            <div class="card-footer">
-                                <div class="card-tags">
-                                    
-                                        
-                                            <span class="card-tag">#HTML</span>
-                                        
-                                            <span class="card-tag">#CSS</span>
-                                        
-                                    
-                                </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">联系表单验证</span>
                             </div>
                         </div>
-                    </a>
-                
-                
-                <!-- 第5个卡片 - 固定内容 -->
-                <div class="card-link card-col-7-5">
-                    <div class="card post-card" data-index="4">
-                        <div class="card-header">
-                            <div class="icon-wrapper">
-                                <i class='fas fa-chart-bar'></i>
+                    </div>
+                    <div class="mt-auto">
+                        <p class="text-xs text-tertiary">初级项目 / 2023 春季</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片2: 音乐播放器 -->
+            <div class="rounded-xl shadow-sm card-gradient-border overflow-hidden" style="background: transparent;">
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-music text-white text-sm"></i>
+                        </div>
+                        <h3 class="text-base font-semibold text-primary">HTML5 音乐播放器</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            <span class="tech-tag tech-tag-primary"><i class="fab fa-html5"></i>HTML5</span>
+                            <span class="tech-tag tech-tag-accent"><i class="fab fa-css3-alt"></i>CSS3</span>
+                            <span class="tech-tag tech-tag-primary"><i class="fab fa-js"></i>JavaScript</span>
+                            <span class="tech-tag tech-tag-accent"><i class="fas fa-volume-up"></i>Web Audio API</span>
+                        </div>
+                        <p class="text-sm text-secondary mb-3">使用HTML5的Audio API实现的音乐播放器，支持播放控制、音量调节、播放列表管理等功能。</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">播放控制与可视化</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">拖拽进度条控制</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">歌曲列表管理</span>
                             </div>
                         </div>
-                        <div class="card-content">
-                            <h3 class="post-title">
-                                Connect any type of data
-                            </h3>
-                            <span class="card-meta">Integrate data from anywhere for a unified, effortless workflow.</span>
+                    </div>
+                    <div class="mt-auto">
+                        <p class="text-xs text-tertiary">进阶项目 / 2024 春季</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片3: 在线购物车 -->
+            <div class="rounded-xl shadow-sm card-gradient-border overflow-hidden" style="background: transparent;">
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-shopping-cart text-white text-sm"></i>
                         </div>
-                        <div class="card-footer">
-                            <div class="card-tags">
-                                <span class="card-tag">#数据</span>
-                                <span class="card-tag">#集成</span>
+                        <h3 class="text-base font-semibold text-primary">在线购物车系统</h3>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            <span class="tech-tag tech-tag-primary"><i class="fab fa-html5"></i>HTML5</span>
+                            <span class="tech-tag tech-tag-accent"><i class="fab fa-css3-alt"></i>CSS3</span>
+                            <span class="tech-tag tech-tag-primary"><i class="fab fa-js"></i>JavaScript</span>
+                            <span class="tech-tag tech-tag-accent"><i class="fas fa-database"></i>LocalStorage</span>
+                        </div>
+                        <p class="text-sm text-secondary mb-3">使用原生JavaScript构建的购物车系统，实现商品列表展示、添加购物车、修改数量与结算等功能。</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">数据本地存储</span>
                             </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">动态价格计算</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                <span class="text-xs text-secondary">商品筛选功能</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <p class="text-xs text-tertiary">中级项目 / 2023 秋季</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片4: 课程资源 -->
+            <div class="rounded-xl shadow-sm card-gradient-border overflow-hidden md:col-span-1 lg:col-span-1" style="background: transparent;">
+                <div class="p-4 flex flex-col h-full">
+                    <div class="mb-4">
+                        <h3 class="text-base font-semibold mb-3 text-primary">前端学习资源</h3>
+                        <div class="flex -space-x-2 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs border-2 border-white dark:border-gray-800">
+                                <i class="fab fa-html5"></i>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-xs border-2 border-white dark:border-gray-800">
+                                <i class="fab fa-css3-alt"></i>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs border-2 border-white dark:border-gray-800">
+                                <i class="fab fa-js"></i>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs border-2 border-white dark:border-gray-800">
+                                <i class="fab fa-react"></i>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-primary mb-1">推荐学习路径</h4>
+                            <p class="text-xs text-tertiary">从入门到进阶的前端学习指南</p>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-xs mr-2">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-primary">前端实战课程</p>
+                                <p class="text-xs text-tertiary">15个编程实例</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-blue-500 dark:text-blue-400 text-sm mb-4">
+                            <i class="fas fa-book mr-2"></i>
+                            <span>查看学习资料</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold mb-2 text-primary">交流社区</h3>
+                        <p class="text-secondary text-sm">加入我们的前端学习小组，一起分享项目经验与技术讨论。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片5: 前端学习路线图 -->
+            <div class="rounded-xl shadow-sm card-gradient-border overflow-hidden md:col-span-1 lg:col-span-2 backdrop-blur-sm">
+                <div class="p-5 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-blue-500 dark:bg-blue-400 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+                            <i class="fas fa-road text-white text-base"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-semibold mb-0.5 text-primary">前端学习路线图</h3>
+                            <p class="text-xs text-tertiary">从零基础到专业开发的学习指南</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 路线图进度指示器 -->
+                    <div class="relative mb-5">
+                        <div class="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner roadmap-progress">
+                        </div>
+                        <div class="mt-1 flex justify-between text-[10px] font-medium px-1">
+                            <span class="stage-name-1">入门</span>
+                            <span class="stage-name-2">进阶</span>
+                            <span class="stage-name-3">高级</span>
+                            <span class="stage-name-4">专家</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 路线图主要内容 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- 阶段1: HTML/CSS基础 -->
+                        <div class="p-4 rounded-lg border border-blue-200 dark:border-blue-800/50 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col min-h-[180px] roadmap-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-6 h-6 rounded-full bg-blue-500 dark:bg-blue-400 text-white flex items-center justify-center text-xs font-bold mr-2 shadow-sm">
+                                    1
+                                </div>
+                                <h4 class="text-sm font-medium stage-name-1">HTML/CSS基础</h4>
+                            </div>
+                            <ul class="space-y-3 pl-1 flex-grow">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle completed-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">HTML结构与语义化标签</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle completed-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">CSS选择器与样式</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle completed-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">响应式布局基础</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 阶段2: JavaScript基础 -->
+                        <div class="p-4 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col min-h-[180px] roadmap-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-6 h-6 rounded-full bg-indigo-500 dark:bg-indigo-400 text-white flex items-center justify-center text-xs font-bold mr-2 shadow-sm">
+                                    2
+                                </div>
+                                <h4 class="text-sm font-medium stage-name-2">JavaScript基础</h4>
+                            </div>
+                            <ul class="space-y-3 pl-1 flex-grow">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle completed-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">变量、函数与事件</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle completed-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">DOM操作与网页交互</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-spinner fa-pulse in-progress-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">异步编程与Fetch API</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 阶段3: 前端框架 -->
+                        <div class="p-4 rounded-lg border border-purple-200 dark:border-purple-800/50 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col min-h-[180px] roadmap-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-6 h-6 rounded-full bg-purple-500 dark:bg-purple-400 text-white flex items-center justify-center text-xs font-bold mr-2 shadow-sm">
+                                    3
+                                </div>
+                                <h4 class="text-sm font-medium stage-name-3">前端框架</h4>
+                            </div>
+                            <ul class="space-y-3 pl-1 flex-grow">
+                                <li class="flex items-start">
+                                    <i class="far fa-circle text-gray-400 dark:text-gray-500 mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">React/Vue组件化开发</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="far fa-circle text-gray-400 dark:text-gray-500 mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-primary">状态管理与路由</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lock locked-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-tertiary">性能优化技巧</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 阶段4: 高级技能 -->
+                        <div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col min-h-[180px] roadmap-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-6 h-6 rounded-full bg-gray-500 dark:bg-gray-600 text-white flex items-center justify-center text-xs font-bold mr-2 shadow-sm">
+                                    4
+                                </div>
+                                <h4 class="text-sm font-medium stage-name-4">高级技能</h4>
+                            </div>
+                            <ul class="space-y-3 pl-1 flex-grow">
+                                <li class="flex items-start">
+                                    <i class="fas fa-lock locked-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-tertiary">TypeScript类型系统</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lock locked-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-tertiary">自动化测试</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-lock locked-icon mt-0.5 mr-2 text-xs"></i>
+                                    <span class="text-xs text-tertiary">前端工程化与CI/CD</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- 翻页按钮 - 底部导航栏风格 -->
-            
-            <div class="flex justify-center items-center mt-8 mb-0" style="margin-bottom: -10px;">
-                <div class="flex items-center gap-3 px-4 py-2 rounded-full" style="border: 1px solid rgba(0, 0, 0, 0.1);" data-pagination>
-                    
-                    <a href="/page/2/" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-800 pagination-icon">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-                    
-                    
-                    <div class="flex items-center px-2">
-                        <span class="text-sm font-medium" style="color: var(--text-primary);">Page <span class="font-bold">3</span> of <span>3</span></span>
-                    </div>
-                    
-                    
-                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 cursor-not-allowed">
-                        <i class="fas fa-chevron-right"></i>
-                    </span>
-                    
-                </div>
-            </div>
-            
-            
-            <!-- 添加翻页按钮样式 -->
-            <style>
-                [data-pagination] {
-                    transition: all 0.3s ease;
-                    background-color: #ffffff;
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                }
-                
-                [data-theme="dark"] [data-pagination] {
-                    background-color: #1e293b;
-                    border-color: rgba(255, 255, 255, 0.1) !important;
-                }
-                
-                [data-theme="dark"] .pagination-icon {
-                    color: white !important;
-                }
-                
-                .pagination-icon {
-                    transition: all 0.3s ease;
-                }
-                
-                .pagination-icon:hover {
-                    background-color: rgba(0, 0, 0, 0.05);
-                }
-                
-                [data-theme="dark"] .pagination-icon:hover {
-                    background-color: rgba(255, 255, 255, 0.1);
-                }
-            </style>
         </div>
     </div>
 </section>
 
-<!-- 分类区域 -->
-<section id="categories" class="my-0 md:my-0 scroll-mt-20 mb-0 md:mb-0" style="margin-top: 0; display: none;">
-    <!-- 移除了显示站点标题的部分 -->
-</section>
 
-<script>
-// 确保闪电效果在首页上初始化
-document.addEventListener('DOMContentLoaded', function() {
-    // 检查闪电效果函数是否存在
-    if (typeof initLightningEffect === 'function') {
-        // 延迟一点时间再初始化闪电效果，确保页面其他元素都已加载
-        setTimeout(function() {
-            initLightningEffect();
-        }, 1000);
-    }
-});
-</script>
+<section id="categories" class="my-1 md:my-2 scroll-mt-20 mb-2" style="margin-top: -60px;">
+    
+</section>
 
 
 <script src="/js/site-health.js"></script>
  
+
     </div>
 
     <!-- 页脚 - 添加底部padding以避免内容被导航栏遮挡 -->
-    <footer class="py-2 pb-20 border-t mt-0" style="border-color: var(--border-color);">
+    <footer class="py-6 pb-20 border-t mt-8" style="border-color: var(--border-color);">
         <div class="container mx-auto px-4 flex flex-col items-center">
             <p class="text-center text-sm text-secondary mb-1">
                 &copy; 2025 Rick's Blog. Powered by Hexo&Rick
@@ -1246,68 +1255,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     <!-- Custom JS -->
     <script src="/js/script.js" defer></script>
-    <script src="/js/post-cards.js"></script>
     <script>
         // 主题切换相关代码
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            // 显示特殊闪电效果（主题切换专用）
-            const lightningContainer = document.getElementById('lightning-container');
+            // 立即切换主题
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             
-            // 创建临时闪电效果
-            const tempLightning = document.createElement('div');
-            tempLightning.className = 'fixed inset-0 pointer-events-none z-[9998]';
-            tempLightning.style.opacity = '1';
-            tempLightning.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" class="lightning-svg">
-                    <path class="lightning-path" d="M300,20 L290,100 L320,110 L280,220 L310,140 L270,130 L300,20" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                    <path class="lightning-path" d="M500,50 L480,130 L510,140 L460,250 L490,160 L450,150 L500,50" fill="none" stroke-width="3" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                    <path class="lightning-path" d="M150,80 L170,140 L140,150 L190,250 L165,170 L195,160 L150,80" fill="none" stroke-width="2" stroke-linecap="round" style="stroke: var(--accent-color); opacity: 0.8;" />
-                </svg>
-            `;
-            document.body.appendChild(tempLightning);
+            // 更新主题图标
+            const themeIcons = document.querySelectorAll('.theme-toggle i');
+            themeIcons.forEach(icon => {
+                if (newTheme === 'dark') {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
             
-            // 临时隐藏常规闪电效果
-            if (lightningContainer) {
-                lightningContainer.style.opacity = '0';
-            }
+            // 显示主题切换通知
+            showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
             
-            // 延迟切换主题，让闪电效果先显示
-            setTimeout(() => {
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                // 更新主题图标
-                const themeIcons = document.querySelectorAll('.theme-toggle i');
-                themeIcons.forEach(icon => {
-                    if (newTheme === 'dark') {
-                        icon.classList.remove('fa-moon');
-                        icon.classList.add('fa-sun');
-                    } else {
-                        icon.classList.remove('fa-sun');
-                        icon.classList.add('fa-moon');
-                    }
-                });
-                
-                // 显示主题切换通知
-                showNotification(newTheme === 'dark' ? '已切换到深色模式' : '已切换到浅色模式');
-                
-                // 触发自定义事件，通知其他脚本主题已更改
-                const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
-                document.dispatchEvent(themeChangeEvent);
-                
-                // 隐藏临时闪电效果并恢复常规闪电效果
-                setTimeout(() => {
-                    if (tempLightning.parentNode) {
-                        tempLightning.parentNode.removeChild(tempLightning);
-                    }
-                    if (lightningContainer) {
-                        lightningContainer.style.opacity = '1';
-                    }
-                }, 2000);
-            }, 100);
+            // 触发自定义事件，通知其他脚本主题已更改
+            const themeChangeEvent = new CustomEvent('themeChanged', { detail: { theme: newTheme } });
+            document.dispatchEvent(themeChangeEvent);
         }
 
         // 通知系统
