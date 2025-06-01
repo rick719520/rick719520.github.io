@@ -723,6 +723,11 @@ h3 i.text-highlight {
     position: relative;
     margin-bottom: 20px;
     transition: all 0.5s ease;
+    border-radius: 16px; /* 添加圆角设计 */
+    max-width: 1280px; /* 限制最大宽度 */
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12); /* 添加阴影效果 */
 }
 
 .full-width-image-container img {
@@ -731,6 +736,7 @@ h3 i.text-highlight {
     object-fit: cover;
     object-position: center;
     transition: transform 0.8s ease, filter 0.8s ease;
+    border-radius: 16px; /* 确保图片也有圆角 */
 }
 
 .image-overlay {
@@ -741,6 +747,7 @@ h3 i.text-highlight {
     height: 100%;
     background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4));
     transition: background 0.5s ease;
+    border-radius: 16px; /* 确保覆盖层也有圆角 */
 }
 
 /* 悬停效果 */
@@ -751,6 +758,22 @@ h3 i.text-highlight {
 
 .full-width-image-container:hover .image-overlay {
     background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .full-width-image-container {
+        border-radius: 12px; /* 移动设备上稍小的圆角 */
+        height: 250px; /* 移动设备上稍小的高度 */
+        margin-left: 15px;
+        margin-right: 15px;
+        width: calc(100% - 30px);
+    }
+    
+    .full-width-image-container img,
+    .image-overlay {
+        border-radius: 12px;
+    }
 }
 </style>
 
