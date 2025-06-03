@@ -779,7 +779,7 @@ h3 i.text-highlight {
 
 <!-- 顶部全宽图片容器 -->
 <div class="full-width-image-container">
-    <img src="https://cab0110.webp.li/PicGO/20250525183447511.png" alt="Banner Image">
+    <img id="random-header-image" src="https://cab0110.webp.li/PicGO/20250525183447511.png" alt="Banner Image">
     <div class="image-overlay"></div>
 </div>
 
@@ -899,8 +899,23 @@ const bannerImages = [
     "https://cab0110.webp.li/PicGO/20250525183506914.png", // 夜间模式图片
 ];
 
+// 顶部图片随机显示数组
+const headerImages = [
+    "https://cab0110.webp.li/PicGO/20250525183447511.png",
+    "https://cab0110.webp.li/PicGO/20250601230725598.png"
+];
+
 // 页面加载完成后的初始化函数
 document.addEventListener('DOMContentLoaded', function() {
+    // 顶部随机图片设置
+    const randomIndex = Math.floor(Math.random() * headerImages.length);
+    const selectedImage = headerImages[randomIndex];
+    
+    const headerImageElement = document.getElementById('random-header-image');
+    if (headerImageElement) {
+        headerImageElement.src = selectedImage;
+    }
+    
     // Banner图片初始化
     const bannerImageElement = document.getElementById('banner-random-image');
     

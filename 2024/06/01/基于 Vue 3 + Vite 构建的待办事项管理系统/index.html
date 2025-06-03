@@ -12,7 +12,7 @@
 <link rel="icon" href="/favicon.ico"> 
 <!-- Theme meta tag -->
 <meta name="color-scheme" content="light dark">
-<title></title>
+<title> - 基于 Vue 3 + Vite 构建的待办事项管理系统</title>
 <!-- Theme Style -->
 
 <link rel="stylesheet" href="/css/style.css">
@@ -288,478 +288,323 @@
 
     <!-- 主内容区域 -->
     <div class="flex-grow container mx-auto px-4 pb-4 md:px-8 md:pb-8" style="margin-top: 20px;">
-        <link rel="preload" href="/mactowin/styles.css" as="style">
-
-<!-- 載入樣式 -->
-<link rel="stylesheet" href="/mactowin/styles.css">
-
-<style>
-
-main.flex-grow.container {
-    padding-top: 0 !important;
-    width: 100%;
-    max-width: 100%;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-.header {
-    text-align: left;
-    padding: 24px 16px;
-    max-width: 800px;
-    margin: 0 auto;
-    margin-top: 0;
-}
-
-.header h1 {
-    font-size: 28px;
-    margin-bottom: 12px;
-    color: var(--text-color);
-    font-weight: 600;
-    text-align: left;
-}
-
-.header p {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.4;
-    max-width: 600px;
-    margin: 0;
-    text-align: left;
-}
-
-/* 確保導航欄文字在淺色模式下的可讀性 */
-body:not([data-theme="dark"]) nav.nav-bg a,
-body:not([data-theme="dark"]) nav.nav-bg .text-primary,
-:root:not([data-theme="dark"]) nav.nav-bg a,
-:root:not([data-theme="dark"]) nav.nav-bg .text-primary {
-    color: var(--highlight-color) !important;
-    text-shadow: 0 0 1px rgba(0,0,0,0.1);
-}
-
-/* 修改 bento-grid 佈局，以匹配圖片中的卡片佈局 */
-.bento-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    background-color: var(--bg-color);
-}
-
-/* 按照圖片中的響應式佈局調整 */
-@media (min-width: 640px) {
-    .bento-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-}
-
-@media (min-width: 1024px) {
-    .bento-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-}
-
-/* 卡片边框渐变样式 */
-.card-gradient-border {
-    border: none !important;
-    position: relative;
-    z-index: 1;
-}
-
-.card-gradient-border::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: 0.75rem; /* rounded-xl */
-    background: linear-gradient(270deg, 
-        rgba(30, 41, 82, 0.05) 0%, 
-        rgba(30, 41, 82, 0.08) 30%, 
-        rgba(185, 30, 71, 0.1) 100%);
-    -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    z-index: -1;
-}
-
-/* 深色模式下增加边框可见度 */
-[data-theme="dark"] .card-gradient-border::before {
-    padding: 1.5px; /* 增加边框宽度 */
-    background: linear-gradient(270deg, 
-        rgba(100, 140, 255, 0.25) 0%, 
-        rgba(120, 160, 255, 0.3) 30%, 
-        rgba(255, 100, 150, 0.35) 100%);
-    box-shadow: 0 0 6px rgba(120, 160, 255, 0.15); /* 减弱发光效果 */
-}
-
-/* 卡片悬停效果 */
-.card {
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.card:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-}
-
-[data-theme="dark"] .card:hover {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* 技术栈标签样式 */
-.tech-tag {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2rem 0.6rem;
-    border-radius: 16px;
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    transition: all 0.3s ease;
-    position: relative;
-    background-color: transparent;
-    margin: 0.2rem;
-    z-index: 1;
-    overflow: hidden;
-    border: 1px solid transparent;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    transform: translateY(0);
-}
-
-/* 主色调技术标签 */
-.tech-tag-primary {
-    color: #1e2952;
-    border-color: rgba(30, 41, 82, 0.3);
-}
-
-/* 辅助色调技术标签 */
-.tech-tag-accent {
-    color: #b91e47;
-    border-color: rgba(185, 30, 71, 0.3);
-}
-
-/* 技术标签悬停效果 */
-.tech-tag::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.1;
-    transition: opacity 0.3s ease, transform 0.5s ease;
-    transform: translateX(-100%);
-    background: linear-gradient(90deg, 
-        transparent 0%,
-        rgba(255, 255, 255, 0.2) 50%,
-        transparent 100%);
-}
-
-.tech-tag-primary::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background: linear-gradient(135deg, rgba(var(--highlight-color-rgb), 0.1), transparent);
-    opacity: 0.2;
-}
-
-.tech-tag-accent::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background: linear-gradient(135deg, rgba(185, 30, 71, 0.1), transparent);
-    opacity: 0.2;
-}
-
-.tech-tag:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-}
-
-.tech-tag:hover::before {
-    transform: translateX(100%);
-    opacity: 0.3;
-}
-
-/* 技术标签图标 */
-.tech-tag i {
-    margin-right: 0.25rem;
-    font-size: 0.65rem;
-    transition: transform 0.3s ease;
-}
-
-.tech-tag:hover i {
-    transform: scale(1.15);
-}
-
-/* 深色模式下的技术标签调整 */
-[data-theme="dark"] .tech-tag {
-    border-width: 1px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-[data-theme="dark"] .tech-tag-primary {
-    border-color: rgba(100, 140, 255, 0.3);
-    color: rgba(180, 200, 255, 0.95);
-}
-
-[data-theme="dark"] .tech-tag-accent {
-    border-color: rgba(255, 100, 150, 0.3);
-    color: rgba(255, 150, 180, 0.95);
-}
-
-[data-theme="dark"] .tech-tag-primary::after {
-    background: linear-gradient(135deg, rgba(100, 140, 255, 0.15), transparent);
-}
-
-[data-theme="dark"] .tech-tag-accent::after {
-    background: linear-gradient(135deg, rgba(255, 100, 150, 0.15), transparent);
-}
-
-[data-theme="dark"] .tech-tag:hover {
-    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-}
-
-/* 重新设计的标题区域样式 */
-.archive-header {
-    text-align: center;
-    padding: 40px 20px;
-    max-width: 1000px;
-    margin: 0 auto 30px;
-    border-bottom: 1px solid rgba(var(--highlight-color-rgb), 0.1);
-    position: relative;
-}
-
-.archive-header h1 {
-    font-size: 36px;
-    margin-bottom: 16px;
-    color: var(--text-color);
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
-
-.archive-header p {
-    font-size: 16px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.archive-count {
-    display: inline-block;
-    padding: 3px 10px;
-    background-color: rgba(var(--highlight-color-rgb), 0.1);
-    color: var(--highlight-color);
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0 5px;
-}
-
-[data-theme="dark"] .archive-count {
-    background-color: rgba(var(--highlight-color-rgb), 0.2);
-}
-
-/* 翻页按钮样式 */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    margin: 40px 0 20px;
-}
-
-.pagination {
-    display: flex;
-    align-items: center;
-    background: rgba(var(--highlight-color-rgb), 0.05);
-    backdrop-filter: blur(10px);
-    padding: 10px 16px;
-    border-radius: 50px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    border: 1px solid rgba(var(--highlight-color-rgb), 0.2);
-}
-
-.page-btn {
-    min-width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 3px;
-    font-weight: 500;
-    font-size: 15px;
-    transition: all 0.25s cubic-bezier(0.3, 0.1, 0.3, 1);
-    position: relative;
-    color: var(--text-color);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.page-btn:hover {
-    background: rgba(var(--highlight-color-rgb), 0.15);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(var(--highlight-color-rgb), 0.1);
-}
-
-.page-btn.active {
-    background: var(--highlight-color);
-    color: #fff;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(var(--highlight-color-rgb), 0.25);
-}
-
-.page-btn.nav {
-    font-size: 18px;
-    color: var(--highlight-color);
-    margin: 0 5px;
-}
-
-.page-btn.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.page-btn .dot {
-    width: 4px;
-    height: 4px;
-    background: var(--text-muted);
-    border-radius: 50%;
-    display: inline-block;
-    margin: 0 1px;
-}
-
-[data-theme="dark"] .pagination {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    border-color: rgba(var(--highlight-color-rgb), 0.25);
-    background: rgba(var(--highlight-color-rgb), 0.12);
-}
-</style>
-
-<div class="archive-header">
-    <h1>My Archive Collection</h1>
-    <p>Explore <span class="archive-count">10 articles</span> organized chronologically</p>
-</div>
-
-
-
-<!-- 主要内容区域 -->
-<section class="w-full max-w-6xl mx-auto my-2 rounded-xl transition-all duration-300 overflow-hidden card" style="border: none; background-color: transparent; box-shadow: none !important;">
-    <div class="px-4 md:px-6 py-4 md:py-6">
-        <!-- 功能卡片区域 -->
-        <div id="articleCards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-3">
+        <!-- 文章头部 -->
+<div class="max-w-5xl mx-auto mb-10" style="margin-top: 20px;">
+    <!-- 文章标题 -->
+    <h1 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--text-primary);">基于 Vue 3 + Vite 构建的待办事项管理系统</h1>
+    
+    <!-- 文章元数据 -->
+    <div class="flex flex-wrap items-center text-sm mb-8 pb-4 border-b" style="color: var(--text-secondary); border-color: var(--card-border);">
+        <div class="mr-6 mb-2">
+            <i class="far fa-calendar-alt mr-1"></i>
+            <span>6月 2024</span>
+        </div>
+        
+        
+        <div class="mr-6 mb-2">
+            <i class="far fa-calendar-check mr-1"></i>
+            <span>Updated 6月 2025</span>
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <i class="far fa-folder-open mr-1"></i>
             
-                <a href="/2025/05/27/JavaScript%E5%85%A5%E9%97%A8%EF%BC%9ADOM%E6%93%8D%E4%BD%9C%E4%B8%8E%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86/" class="rounded-xl shadow-sm card-gradient-border overflow-hidden" style="background: transparent;">
-                    <div class="p-4 flex flex-col h-full">
-                        <div class="flex items-center mb-4">
-                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
-                                <i class="fas fa-laptop text-white text-sm"></i>
-                            </div>
-                            <h3 class="text-base font-semibold text-primary">JavaScript入门：DOM操作与事件处理</h3>
-                        </div>
-                        <div class="mb-4">
-                            <div class="flex flex-wrap gap-1.5 mb-3">
-                                
-                                    <span class="tech-tag tech-tag-primary">
-                                        <i class="fab fa-html5"></i>前端开发
-                                    </span>
-                                
-                                    <span class="tech-tag tech-tag-accent">
-                                        <i class="fab fa-css3-alt"></i>JavaScript
-                                    </span>
-                                
-                                    <span class="tech-tag tech-tag-primary">
-                                        <i class="fab fa-js"></i>DOM
-                                    </span>
-                                
-                                    <span class="tech-tag tech-tag-accent">
-                                        <i class="fab fa-code"></i>事件处理
-                                    </span>
-                                
-                            </div>
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center">
-                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                        <span class="text-xs text-secondary">DOM基础概念</span>
-                                    </div>
-                                
-                                    <div class="flex items-center">
-                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                        <span class="text-xs text-secondary">事件处理</span>
-                                    </div>
-                                
-                                    <div class="flex items-center">
-                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                        <span class="text-xs text-secondary">实际应用：创建一个简单的待办事项列表</span>
-                                    </div>
-                                
-                            </div>
-                        </div>
-                        <div class="mt-auto">
-                            <p class="text-xs text-tertiary text-right">May 2025</p>
-                        </div>
-                    </div>
+                <a href="/categories/%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF/" class="hover:text-highlight" style="color: var(--text-secondary);">
+                    前端技术, 
+                </a>
+            
+                <a href="/categories/%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF/Vue%E7%94%9F%E6%80%81/" class="hover:text-highlight" style="color: var(--text-secondary);">
+                    Vue生态
                 </a>
             
         </div>
         
-        <!-- 全新的分页导航 -->
-        <div class="pagination-container">
-            <div class="pagination">
-                <!-- 上一页按钮 -->
-                
-                    <span class="page-btn nav disabled">
-                        <i class="fas fa-chevron-left"></i>
-                    </span>
-                
+    </div>
+</div>
 
+<!-- 文章内容 -->
+<div class="max-w-4xl mx-auto relative post-page">
+    <!-- Main Content -->
+    <div class="w-full">
+        <article>
+            <!-- Content -->
+            
+            
+            <div class="prose max-w-none mx-auto">
                 
-                        <span class="page-btn active">1</span>
-                        
+                    <h1 id="Vue-3-待办事项管理系统"><a href="#Vue-3-待办事项管理系统" class="headerlink" title="Vue 3 待办事项管理系统"></a>Vue 3 待办事项管理系统</h1><p>基于 Vue 3 + Vite 构建的待办事项管理系统，使用 Element Plus 组件库。</p>
+<h2 id="项目技术栈"><a href="#项目技术栈" class="headerlink" title="项目技术栈"></a>项目技术栈</h2><ul>
+<li>Vue 3 + Vite</li>
+<li>Vue Router 4</li>
+<li>Pinia</li>
+<li>Axios</li>
+<li>Element Plus</li>
+</ul>
+<h2 id="功能特点"><a href="#功能特点" class="headerlink" title="功能特点"></a>功能特点</h2><ul>
+<li>用户登录&#x2F;登出</li>
+<li>任务总览和统计</li>
+<li>任务列表展示与搜索</li>
+<li>任务详情查看与编辑</li>
+<li>新增任务</li>
+<li>分类管理</li>
+</ul>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
 
-                <!-- 下一页按钮 -->
-                
-                    <span class="page-btn nav disabled">
-                        <i class="fas fa-chevron-right"></i>
-                    </span>
+<h3 id="开发环境运行"><a href="#开发环境运行" class="headerlink" title="开发环境运行"></a>开发环境运行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+
+<h3 id="生产环境构建"><a href="#生产环境构建" class="headerlink" title="生产环境构建"></a>生产环境构建</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+
+<h2 id="登录信息"><a href="#登录信息" class="headerlink" title="登录信息"></a>登录信息</h2><p>使用以下信息登录系统：</p>
+<ul>
+<li>用户名：admin</li>
+<li>密码：123456</li>
+</ul>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">src/</span><br><span class="line">├── api/          # API 请求</span><br><span class="line">├── assets/       # 静态资源</span><br><span class="line">├── components/   # 公共组件</span><br><span class="line">├── router/       # 路由配置</span><br><span class="line">├── store/        # Pinia 状态管理</span><br><span class="line">├── views/        # 页面组件</span><br><span class="line">├── App.vue       # 根组件</span><br><span class="line">├── main.js       # 入口文件</span><br><span class="line">└── style.css     # 全局样式</span><br></pre></td></tr></table></figure>
+
+<h2 id="页面说明"><a href="#页面说明" class="headerlink" title="页面说明"></a>页面说明</h2><ol>
+<li><strong>LoginPage.vue</strong>：登录页面</li>
+<li><strong>HomePage.vue</strong>：首页，展示任务总览和统计信息</li>
+<li><strong>TaskList.vue</strong>：任务列表页，展示所有任务并支持搜索</li>
+<li><strong>TaskDetail.vue</strong>：任务详情页，查看和编辑任务</li>
+<li><strong>AddTask.vue</strong>：添加任务页面</li>
+<li><strong>CategoryManager.vue</strong>：分类管理页面</li>
+</ol>
+
                 
             </div>
-        </div>
-        
+        </article>
     </div>
-</section>
+</div>
+
+<style>
+/* 添加一点过渡效果 */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    scroll-margin-top: calc(var(--nav-height) + 1rem);
+    transition: color 0.3s ease;
+}
+
+/* 优化文章内容宽度 */
+.prose {
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+/* 针对不同屏幕尺寸优化阅读体验 */
+@media (max-width: 768px) {
+    .prose {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}
+
+/* 优化图片显示 */
+.prose img {
+    margin: 1.5rem auto;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Load More Button Styles */
+#load-more-button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    background-color: transparent !important;
+}
+
+#load-more-button:hover {
+    transform: translateY(-2px);
+    border-color: var(--highlight-color) !important;
+    color: var(--highlight-color) !important;
+}
+
+#load-more-button:active {
+    transform: translateY(0);
+}
+
+#load-more-button::before {
+    display: none; /* 移除之前的背景效果 */
+}
+
+#load-more-button:hover i {
+    color: var(--highlight-color);
+}
+
+#article-preview {
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#article-preview.truncated {
+    position: relative;
+    overflow: hidden;
+}
+
+#article-preview.truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to bottom, 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0), 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0.8) 70%, 
+                              rgba(var(--card-bg-rgb, 255, 255, 255), 0.95) 90%);
+    pointer-events: none;
+}
+
+/* 添加深色模式下的渐变效果 */
+[data-theme="dark"] #article-preview.truncated::after {
+    background: linear-gradient(to bottom, 
+                              rgba(15, 23, 42, 0), 
+                              rgba(15, 23, 42, 0.8) 70%, 
+                              rgba(15, 23, 42, 0.95) 90%);
+}
+
+#load-more-container {
+    position: relative;
+    z-index: 5;
+    margin-top: -50px;
+    padding-top: 70px;
+}
+</style>
 
 <script>
-// 确保页面完全载入后执行
 document.addEventListener('DOMContentLoaded', function() {
-    // Brief timeout to ensure everything is loaded
-    setTimeout(function() {
-        // 确保导航栏文字颜色正确
-        const navElement = document.querySelector('nav');
-        if (navElement && !navElement.classList.contains('nav-bg')) {
-            navElement.classList.add('nav-bg');
-        }
+    // Get background color and convert to RGB for gradient
+    const computeRGBFromCardBgColor = () => {
+        // 检查当前主题
+        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
         
-        // 确保主容器样式正确
-        const mainContainer = document.querySelector('main.flex-grow.container');
-        if (mainContainer) {
-            mainContainer.style.paddingTop = '0';
-            mainContainer.style.maxWidth = '100%';
-            mainContainer.style.paddingLeft = '0';
-            mainContainer.style.paddingRight = '0';
+        // 根据主题使用不同的背景色
+        const cardBgColor = isDarkTheme ? 
+            '#0f172a' : // 深色模式背景色
+            (getComputedStyle(document.documentElement).getPropertyValue('--bg-color') || '#ffffff'); // 浅色模式背景色
+        
+        // Function to convert hex/rgb color to rgb values
+        const getRGBValues = (color) => {
+            // Create a temporary element
+            const temp = document.createElement('div');
+            temp.style.color = color;
+            temp.style.display = 'none';
+            document.body.appendChild(temp);
+            
+            // Get computed color
+            const computedColor = getComputedStyle(temp).color;
+            document.body.removeChild(temp);
+            
+            // Extract RGB values
+            const match = computedColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+            if (match) {
+                return `${match[1]}, ${match[2]}, ${match[3]}`;
+            }
+            
+            return isDarkTheme ? '15, 23, 42' : '255, 255, 255'; // 根据主题提供默认值
+        };
+        
+        // Set the RGB values as a CSS variable
+        const rgbValues = getRGBValues(cardBgColor);
+        document.documentElement.style.setProperty('--card-bg-rgb', rgbValues);
+    };
+    
+    // Compute RGB values
+    computeRGBFromCardBgColor();
+    
+    // 监听主题变化事件
+    document.addEventListener('themeChanged', function(event) {
+        // 重新计算背景颜色
+        computeRGBFromCardBgColor();
+    });
+    
+    const articlePreview = document.getElementById('article-preview');
+    const loadMoreButton = document.getElementById('load-more-button');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const loadMoreText = document.getElementById('load-more-text');
+    
+    if (articlePreview && loadMoreButton) {
+        const truncationPoint = document.getElementById('article-truncation-point');
+        
+        if (truncationPoint) {
+            // Get the position of the truncation point, with safety margin
+            const truncationPos = truncationPoint.offsetTop + 50;
+            
+            // Store original article height for animation
+            const fullHeight = articlePreview.scrollHeight;
+            
+            // Initially set the article as truncated with transition
+            articlePreview.style.transition = 'max-height 0.5s ease-in-out';
+            articlePreview.classList.add('truncated');
+            
+            // Set timeout to ensure transition works properly
+            setTimeout(() => {
+                articlePreview.style.maxHeight = truncationPos + 'px';
+            }, 10);
+            
+            // Check if content is primarily Chinese
+            const isChineseContent = (function() {
+                const content = articlePreview.textContent || '';
+                const sampleText = content.substring(0, 2000);
+                const chineseCount = (sampleText.match(/[\u4e00-\u9fa5]/g) || []).length;
+                return chineseCount > 150;
+            })();
+            
+            // Set button text based on language
+            const moreText = isChineseContent ? '阅读更多' : 'Load more';
+            const lessText = isChineseContent ? '收起内容' : 'Show less';
+            
+            // Handle load more button click
+            loadMoreButton.addEventListener('click', function() {
+                if (articlePreview.classList.contains('truncated')) {
+                    // Expand article
+                    articlePreview.classList.remove('truncated');
+                    articlePreview.style.maxHeight = fullHeight + 'px';
+                    
+                    // After animation completes, set to 'none' to handle any dynamic content changes
+                    setTimeout(() => {
+                        articlePreview.style.maxHeight = 'none';
+                    }, 500);
+                    
+                    // Update button
+                    loadMoreText.textContent = lessText;
+                    loadMoreButton.querySelector('i').classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    // Collapse article - first set a fixed height for animation
+                    articlePreview.style.maxHeight = articlePreview.scrollHeight + 'px';
+                    
+                    // Force reflow to ensure the browser registers the maxHeight change
+                    void articlePreview.offsetWidth;
+                    
+                    // Then add the truncated class and reduce height
+                    articlePreview.classList.add('truncated');
+                    articlePreview.style.maxHeight = truncationPos + 'px';
+                    
+                    // Update button
+                    loadMoreText.textContent = moreText;
+                    loadMoreButton.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    
+                    // Scroll back to the top of the article
+                    window.scrollTo({
+                        top: articlePreview.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (articlePreview.classList.contains('truncated')) {
+                    // Update max height based on current truncation point position
+                    articlePreview.style.maxHeight = truncationPoint.offsetTop + 50 + 'px';
+                }
+            });
+        } else {
+            // No truncation point found - hide the button
+            loadMoreContainer.style.display = 'none';
         }
-    }, 300);
+    }
 });
 </script> 
     </div>
